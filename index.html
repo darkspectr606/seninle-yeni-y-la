@@ -135,7 +135,7 @@ h1 { font-size: 42px; }
 
 <!-- GECE YARISI SAYACI -->
 <div id="countdownOverlay">
-  ⏳ Gece yarısına kadar: <span id="countdown">00:00:00</span>
+  ⏳ Hedef zamana kadar: <span id="countdown">00:00:00</span>
 </div>
 
 <canvas id="heartsBg"></canvas>
@@ -172,33 +172,48 @@ h1 { font-size: 42px; }
 
 <script>
 /* ===============================
-   GECE YARISI SAYACI
+   GECE YARISI SAYACI (TEST 00:10)
 ================================= */
 const countdownEl = document.getElementById("countdown");
 const overlay = document.getElementById("countdownOverlay");
 const mainContent = document.getElementById("mainContent");
 
-// Gece yarısı hedef zamanı
-function getNextMidnight() {
+let countdownDone = false;
+
+// TEST AMAÇLI: bugünkü saat 00:10
+function getTestTargetTime() {
   const now = new Date();
-  const midnight = new Date();
-  midnight.setHours(24,0,0,0); // 00:00:00 bir sonraki gün
-  return midnight;
+  const target = new Date();
+  target.setHours(0,10,0,0); // bugün 00:10
+  if(target < now) target.setDate(target.getDate() + 1); // geçerse ertesi gün
+  return target;
 }
 
-let countdownInterval = setInterval(() => {
+const countdownInterval = setInterval(() => {
+  if(countdownDone) return;
   const now = new Date();
-  const diff = getNextMidnight() - now;
-  if (diff <= 0) {
+  const diff = getTestTargetTime() - now;
+
+  if(diff <= 0){
+    countdownDone = true;
     clearInterval(countdownInterval);
-    overlay.classList.add("hidden"); // fade out
-    setTimeout(() => {
+
+    overlay.style.transition = "opacity 2s ease";
+    overlay.style.opacity = "0";
+
+    setTimeout(()=>{
+      overlay.style.display = "none";
       mainContent.style.opacity = "1";
-      // Sürpriz animasyon: kalpler + konfeti
-      for (let i=0; i<3; i++) setTimeout(()=>confetti({ particleCount: 150, spread: 120 }), i*500);
-    }, 2000); // overlay fade out süresi
+
+      // sürpriz animasyon
+      for(let i=0;i<3;i++){
+        setTimeout(()=>confetti({ particleCount: 150, spread: 120 }), i*500);
+      }
+    },2000);
+
     return;
   }
+
   const hours = Math.floor(diff / (1000*60*60));
   const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
   const seconds = Math.floor((diff % (1000*60)) / 1000);
@@ -325,7 +340,7 @@ function drawHeart(x,y,s,o){
 })();
 
 /* TYPEWRITER SAYAÇ SONRASI BAŞLAT */
-setTimeout(typeWriter,100); // sayfa açılır açılmaz başlar
+setTimeout(typeWriter,100);
 </script>
 
 </body>
