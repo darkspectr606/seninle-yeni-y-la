@@ -18,7 +18,7 @@ body {
 #lockScreen {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.92);
+  background: rgba(0,0,0,1); /* TAM SİYAH */
   z-index: 2000;
   display: flex;
   flex-direction: column;
@@ -35,10 +35,12 @@ body {
   margin-top: 20px;
 }
 
+/* 🔥 SİTE BAŞTA GİZLİ */
 .container {
   max-width: 1200px;
   margin: auto;
   padding: 30px 20px;
+  visibility: hidden; /* 👈 kritik */
 }
 
 h1 {
@@ -176,27 +178,29 @@ benim için önemli olan tek şey sensin ❤️
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
-/* ⏳ SAYAÇ — TEST SAATİ 20:03 */
+/* ⏳ SAYAÇ — TEST */
 const target = new Date();
 target.setHours(0, 0, 0, 0);
 
-// Eğer bugün 00:00 geçtiyse, yarını hedefle
 if (new Date() > target) {
   target.setDate(target.getDate() + 1);
 }
 
-
 const lock = document.getElementById("lockScreen");
 const cd = document.getElementById("countdown");
+const container = document.querySelector(".container");
 
 const interval = setInterval(() => {
   const diff = target - new Date();
+
   if (diff <= 0) {
     clearInterval(interval);
     lock.style.display = "none";
+    container.style.visibility = "visible"; /* 👈 site açılıyor */
     confetti({ particleCount: 250, spread: 100 });
     return;
   }
+
   const m = Math.floor(diff / 60000);
   const s = Math.floor((diff % 60000) / 1000);
   cd.innerText = `${m} dk ${s} sn`;
@@ -210,7 +214,13 @@ document.getElementById("startBtn").onclick = () => {
 };
 
 /* FOTOĞRAFLAR */
-const notes = { 1:"ilk yavrumuzun bardaktaki tatlı gülüşü💕",7:"Ah senin şu şumarıklıkların",15:"Hep böyle şaşırıcaksın",22:"En sevdiğimiz fotoğraf" };
+const notes = {
+  1:"ilk yavrumuzun bardaktaki tatlı gülüşü💕",
+  7:"Ah senin şu şumarıklıkların",
+  15:"Hep böyle şaşırıcaksın",
+  22:"En sevdiğimiz fotoğraf"
+};
+
 const gallery = document.getElementById("gallery");
 
 for (let i=1;i<=25;i++){
@@ -220,12 +230,14 @@ for (let i=1;i<=25;i++){
   img.src=`foto${i}.jpg`;
   img.onclick=()=>openOverlay(img.src);
   card.appendChild(img);
+
   if(notes[i]){
     const n=document.createElement("div");
     n.className="note";
     n.innerText=notes[i];
     card.appendChild(n);
   }
+
   gallery.appendChild(card);
 }
 
@@ -240,7 +252,7 @@ function openOverlay(src){
   overlayImg.src=src;
   canvas.width=innerWidth;
   canvas.height=innerHeight;
-  for(let i=0;i<8;i++)setTimeout(explode,i*250);
+  for(let i=0;i<8;i++) setTimeout(explode,i*250);
 }
 
 function closeOverlay(){
