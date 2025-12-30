@@ -212,21 +212,50 @@ function explode(){
   requestAnimationFrame(anim);
 })();
 
-/* 💕 KALP ARKA PLAN */
-const bg=document.getElementById("heartsBg"), bctx=bg.getContext("2d");
-function resize(){ bg.width=innerWidth; bg.height=innerHeight; } resize(); addEventListener("resize",resize);
-const hearts=Array.from({length:30},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,s:Math.random()*10+6,sp:Math.random()*.4+.2,o:Math.random()*.4+.3}));
-function drawH(x,y,s,o){
-  bctx.globalAlpha=o; bctx.fillStyle="#ff6b81"; bctx.beginPath();
-  bctx.moveTo(x,y);
-  bctx.bezierCurveTo(x-s,y-s,x-s*2,y+s/3,x,y+s);
-  bctx.bezierCurveTo(x+s*2,y+s/3,x+s,y-s,x,y);
-  bctx.fill(); bctx.globalAlpha=1;
+/* 💕 KALP ARKA PLAN – MOBİL UYUMLU */
+const bg = document.getElementById("heartsBg");
+const bctx = bg.getContext("2d");
+
+function resize() {
+  bg.width = innerWidth;
+  bg.height = innerHeight;
 }
-(function hb(){
-  bctx.clearRect(0,0,bg.width,bg.height);
-  hearts.forEach(h=>{ drawH(h.x,h.y,h.s,h.o); h.y-=h.sp; if(h.y<-20){h.y=bg.height+20; h.x=Math.random()*bg.width;} });
-  requestAnimationFrame(hb);
+resize();
+addEventListener("resize", resize);
+
+const isMobile = innerWidth < 768;
+
+const heartCount = isMobile ? 55 : 30;
+const hearts = Array.from({ length: heartCount }, () => ({
+  x: Math.random() * bg.width,
+  y: Math.random() * bg.height,
+  s: isMobile ? Math.random() * 18 + 14 : Math.random() * 10 + 6,
+  sp: isMobile ? Math.random() * 0.6 + 0.3 : Math.random() * 0.4 + 0.2,
+  o: isMobile ? Math.random() * 0.7 + 0.4 : Math.random() * 0.4 + 0.3
+}));
+
+function drawHeart(x, y, s, o) {
+  bctx.globalAlpha = o;
+  bctx.fillStyle = "#ff9aa2";
+  bctx.beginPath();
+  bctx.moveTo(x, y);
+  bctx.bezierCurveTo(x - s, y - s, x - s * 2, y + s / 2, x, y + s);
+  bctx.bezierCurveTo(x + s * 2, y + s / 2, x + s, y - s, x, y);
+  bctx.fill();
+  bctx.globalAlpha = 1;
+}
+
+(function animateHearts() {
+  bctx.clearRect(0, 0, bg.width, bg.height);
+  hearts.forEach(h => {
+    drawHeart(h.x, h.y, h.s, h.o);
+    h.y -= h.sp;
+    if (h.y < -30) {
+      h.y = bg.height + 30;
+      h.x = Math.random() * bg.width;
+    }
+  });
+  requestAnimationFrame(animateHearts);
 })();
 </script>
 
