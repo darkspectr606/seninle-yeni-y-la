@@ -146,11 +146,11 @@ canvas { position: absolute; inset: 0; }
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
-/* 📝 TYPEWRITER – DÜZELTİLMİŞ */
+/* 📝 TYPEWRITER */
 const text = `Seni düşündüğüm her an bu sayfaya saklandı 💫
 
 Belki aynı şehirde değiliz,
-belki yan yana değiliz…
+belki yan yana değiliz… 
 ama kalbim her zaman senin yanında ❤️
 
 Mesafeler sadece sayılardan ibaret.
@@ -158,7 +158,7 @@ Benim için önemli olan tek şey sensin.
 
 Bu sayfadaki her fotoğraf,
 her kelime,
-her küçük detay…
+her küçük detay… 
 sana olan sevgimin bir parçası.`;
 
 let i = 0;
@@ -196,19 +196,31 @@ for(let i=1;i<=25;i++){
 const o=document.getElementById("overlay"), oi=document.getElementById("overlayImg");
 const canvas=document.getElementById("fireworks"), ctx=canvas.getContext("2d");
 let particles=[];
+
 function openOverlay(src){
   o.style.display="flex"; oi.src=src;
   canvas.width=innerWidth; canvas.height=innerHeight;
   for(let i=0;i<6;i++)setTimeout(explode,i*300);
 }
-function closeOverlay(){ o.style.display="none"; ctx.clearRect(0,0,canvas.width,canvas.height); particles=[]; }
+
+function closeOverlay(){ 
+  o.style.display="none"; 
+  ctx.clearRect(0,0,canvas.width,canvas.height); 
+  particles=[]; 
+}
+
 function explode(){
   const x=Math.random()*canvas.width,y=Math.random()*canvas.height/2;
   for(let i=0;i<80;i++)particles.push({x,y,vx:(Math.random()-.5)*6,vy:(Math.random()-.5)*6,life:60,color:`hsl(${Math.random()*360},100%,50%)`});
 }
+
 (function anim(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach((p,i)=>{ p.x+=p.vx; p.y+=p.vy; p.life--; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,2,0,Math.PI*2); ctx.fill(); if(p.life<=0)particles.splice(i,1); });
+  particles.forEach((p,i)=>{ 
+    p.x+=p.vx; p.y+=p.vy; p.life--; 
+    ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,2,0,Math.PI*2); ctx.fill(); 
+    if(p.life<=0)particles.splice(i,1); 
+  });
   requestAnimationFrame(anim);
 })();
 
@@ -224,7 +236,6 @@ resize();
 addEventListener("resize", resize);
 
 const isMobile = innerWidth < 768;
-
 const heartCount = isMobile ? 55 : 30;
 const hearts = Array.from({ length: heartCount }, () => ({
   x: Math.random() * bg.width,
@@ -257,6 +268,17 @@ function drawHeart(x, y, s, o) {
   });
   requestAnimationFrame(animateHearts);
 })();
+
+/* 🎉 SAYFA SONU KONFETİ VE #FINAL GÖSTER */
+const final = document.getElementById("final");
+window.addEventListener("scroll", () => {
+  const scrollBottom = window.innerHeight + window.scrollY;
+  const docHeight = document.body.offsetHeight;
+  if(scrollBottom >= docHeight - 10 && final.style.opacity === "0") {
+    final.style.opacity = "1";
+    confetti({ particleCount: 300, spread: 120 });
+  }
+});
 </script>
 
 </body>
