@@ -271,14 +271,25 @@ function drawHeart(x, y, s, o) {
 
 /* 🎉 SAYFA SONU KONFETİ VE #FINAL GÖSTER */
 const final = document.getElementById("final");
-window.addEventListener("scroll", () => {
-  const scrollBottom = window.innerHeight + window.scrollY;
-  const docHeight = document.body.offsetHeight;
-  if(scrollBottom >= docHeight - 10 && final.style.opacity === "0") {
+
+// Fonksiyon scroll pozisyonunu kontrol eder
+function checkScrollEnd() {
+  const scrollBottom = window.innerHeight + window.pageYOffset;
+  const docHeight = Math.max(
+    document.body.scrollHeight, 
+    document.documentElement.scrollHeight, 
+    document.body.offsetHeight, 
+    document.documentElement.offsetHeight
+  );
+  if(scrollBottom >= docHeight - 50 && final.style.opacity === "0") {
     final.style.opacity = "1";
-    confetti({ particleCount: 300, spread: 120 });
+    confetti({ particleCount: 400, spread: 160 });
   }
-});
+}
+
+// Scroll ve touchmove ile mobilde de tetiklenir
+window.addEventListener("scroll", checkScrollEnd);
+window.addEventListener("touchmove", checkScrollEnd);
 </script>
 
 </body>
