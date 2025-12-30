@@ -4,132 +4,68 @@
 <meta charset="UTF-8">
 <title>Mutlu Yıllar Aşkım ❤️</title>
 <style>
-body, html {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+html, body {
+  margin: 0; padding: 0;
+  width: 100%; height: 100%;
   font-family: 'Segoe UI', sans-serif;
   background: radial-gradient(circle at top, #ff512f, #dd2476, #1a1a2e);
-  color: white;
-  text-align: center;
+  color: white; text-align: center;
   overflow-x: hidden;
 }
 
-/* SÜRPRİZ EKRANI */
 #blackOverlay {
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  flex-direction: column;
-  color: white;
-  font-size: 32px;
+  display: flex; justify-content: center; align-items: center;
+  z-index: 9999; flex-direction: column;
+  color: white; font-size: 32px;
 }
-
 #surpriseBtn {
-  margin-top: 20px;
-  padding: 16px 32px;
-  font-size: 20px;
-  border-radius: 30px;
-  border: none;
-  cursor: pointer;
-  background: #ffcc70;
-  color: #222;
+  margin-top: 20px; padding: 16px 32px;
+  font-size: 20px; border-radius: 30px;
+  border: none; cursor: pointer;
+  background: #ffcc70; color: #222;
 }
 
-/* ANA İÇERİK */
 .container {
-  max-width: 1200px;
-  margin: auto;
+  max-width: 1200px; margin: auto;
   padding: 30px 20px;
-  opacity: 0;
-  pointer-events: none;
+  opacity: 0; pointer-events: none;
   transition: opacity 2s ease;
 }
 
-.message {
-  margin: 30px auto;
-  font-size: 20px;
-  line-height: 1.8;
-  max-width: 850px;
-  min-height: 220px;
-}
+.message { margin: 30px auto; font-size: 20px; line-height: 1.8; max-width: 850px; min-height: 220px; }
 
 .music-hint { margin-top: 25px; font-size: 17px; opacity: 0.9; }
 .music-btn {
-  margin: 25px 0;
-  padding: 12px 28px;
-  font-size: 16px;
-  border: none;
-  border-radius: 30px;
-  background: #ffcc70;
-  color: #222;
-  cursor: pointer;
+  margin: 25px 0; padding: 12px 28px;
+  font-size: 16px; border: none; border-radius: 30px;
+  background: #ffcc70; color: #222; cursor: pointer;
 }
 
 .gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 22px;
-  margin-top: 40px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 22px; margin-top: 40px;
 }
-.photo-card {
-  background: rgba(255,255,255,0.08);
-  border-radius: 18px;
-  padding: 10px;
-  transition: transform 0.3s ease;
-}
-.photo-card img {
-  width: 100%;
-  border-radius: 14px;
-  cursor: pointer;
-  object-fit: cover;
-}
+.photo-card { background: rgba(255,255,255,0.08); border-radius: 18px; padding: 10px; transition: transform 0.3s ease; }
+.photo-card img { width: 100%; border-radius: 14px; cursor: pointer; object-fit: cover; }
 .photo-card:hover { transform: scale(1.05); }
-
-.note {
-  font-size: 14px;
-  margin-top: 6px;
-  opacity: 0.9;
-  font-style: italic;
-}
+.note { font-size: 14px; margin-top: 6px; opacity: 0.9; font-style: italic; }
 
 .overlay {
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background: rgba(0,0,0,0.95);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
+  display: none; justify-content: center; align-items: center; z-index: 9999;
 }
 .overlay img {
-  max-width: 95%;
-  max-height: 95%;
-  object-fit: contain;
-  border-radius: 16px;
-  z-index: 2;
+  max-width: 95%; max-height: 95%; object-fit: contain;
+  border-radius: 16px; z-index: 2;
 }
 
 canvas { position: absolute; inset: 0; }
 
-#final {
-  margin: 120px 0 80px;
-  font-size: 36px;
-  opacity: 0;
-  transition: opacity 2s ease;
-}
-
-.footer { 
-  margin: 50px 0; 
-  font-size: 32px;   
-  font-weight: 600;  
-  color: #ffddcf;    
-}
+#final { margin: 120px 0 80px; font-size: 36px; opacity: 0; transition: opacity 2s ease; }
+.footer { margin: 50px 0; font-size: 32px; font-weight: 600; color: #ffddcf; }
 
 h1 { font-size: 42px; }
 .subtitle { font-size: 18px; opacity: 0.9; }
@@ -150,10 +86,7 @@ h1 { font-size: 42px; }
 
   <div class="message" id="typewriter"></div>
 
-  <div class="music-hint">
-    🎶 Devam etmeden önce, aşağıdaki tuşa dokunur musun?
-  </div>
-
+  <div class="music-hint">🎶 Devam etmeden önce, aşağıdaki tuşa dokunur musun?</div>
   <button class="music-btn" id="startBtn">💖 Dokun ve Anımız Başlasın 🎶</button>
 
   <audio id="music" loop>
@@ -163,7 +96,6 @@ h1 { font-size: 42px; }
   <div class="gallery" id="gallery"></div>
 
   <div id="final">❤️ İyi ki varsın… ❤️</div>
-
   <div class="footer">💌 Seni çok seviyorum.</div>
 </div>
 
@@ -173,40 +105,31 @@ h1 { font-size: 42px; }
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
 <script>
-/* ===============================
-   SÜRPRİZ BUTONU + FADE OUT
-================================= */
 const blackOverlay = document.getElementById("blackOverlay");
 const surpriseBtn = document.getElementById("surpriseBtn");
 const mainContent = document.getElementById("mainContent");
 const startBtn = document.getElementById("startBtn");
 const music = document.getElementById("music");
 
-surpriseBtn.addEventListener("click", () => {
-  confetti({ particleCount: 200, spread: 90 });
-
-  blackOverlay.style.transition = "opacity 2s ease";
-  blackOverlay.style.opacity = "0";
-
-  setTimeout(() => {
-    blackOverlay.style.display = "none";
-    mainContent.style.opacity = "1";
-    mainContent.style.pointerEvents = "auto";
-    document.body.style.overflow = "auto";
-
+// Sürpriz butonu
+surpriseBtn.addEventListener("click", ()=>{
+  confetti({particleCount:200, spread:90});
+  blackOverlay.style.transition="opacity 2s ease";
+  blackOverlay.style.opacity="0";
+  setTimeout(()=>{
+    blackOverlay.style.display="none";
+    mainContent.style.opacity="1";
+    mainContent.style.pointerEvents="auto";
+    document.body.style.overflow="auto";
+    document.documentElement.style.overflow="auto";
     typeWriter();
-    
-    // Müzik butonunu kullanıcı etkileşimi için göster
-    startBtn.style.display = "inline-block";
-  }, 2000);
+    startBtn.style.display="inline-block";
+  },2000);
 });
 
-/* ===============================
-   TYPEWRITER
-================================= */
-const text = `Seni düşündüğüm her an bu sayfaya saklandı 💫
+// Typewriter
+const text=`Seni düşündüğüm her an bu sayfaya saklandı 💫
 
 Belki aynı şehirde değiliz,
 belki yan yana değiliz… 
@@ -219,29 +142,18 @@ Bu sayfadaki her fotoğraf,
 her kelime,
 her küçük detay… 
 sana olan sevgimin bir parçası.`;
-
 let i=0;
-const tw = document.getElementById("typewriter");
-function typeWriter() {
-  if(i<text.length){
-    tw.innerHTML += text[i]==="\n" ? "<br>" : text[i];
-    i++;
-    setTimeout(typeWriter,40);
-  }
-}
+const tw=document.getElementById("typewriter");
+function typeWriter(){ if(i<text.length){ tw.innerHTML+=text[i]==="\n"? "<br>":text[i]; i++; setTimeout(typeWriter,40); }}
 
-/* ===============================
-   MÜZİK
-================================= */
-startBtn.onclick = () => {
-  music.play().catch(()=>{}); // mobilde güvenli tetikleme
-  startBtn.style.display = "none";
-  confetti({ particleCount: 200, spread: 90 });
+// Müzik
+startBtn.onclick = ()=>{
+  music.play().catch(()=>{}); // mobil uyumlu
+  startBtn.style.display="none";
+  confetti({particleCount:200, spread:90});
 };
 
-/* ===============================
-   FOTOĞRAFLAR
-================================= */
+// Fotoğraflar
 const notes={1:"ilk yavrumuzun bardaktaki tatlı gülüşü💕",7:"Ah senin şu şumarıklıkların",15:"Hep böyle şaşırıcaksın",22:"En sevdiğimiz fotoğraf"};
 const g=document.getElementById("gallery");
 for(let i=1;i<=25;i++){
@@ -252,73 +164,57 @@ for(let i=1;i<=25;i++){
   g.appendChild(c);
 }
 
-/* ===============================
-   OVERLAY + HAVAİ FİŞEK
-================================= */
+// Overlay + fireworks
 const o=document.getElementById("overlay"), oi=document.getElementById("overlayImg");
 const canvas=document.getElementById("fireworks"), ctx=canvas.getContext("2d");
 let particles=[];
 function openOverlay(src){
   o.style.display="flex"; oi.src=src;
   canvas.width=window.innerWidth; canvas.height=window.innerHeight;
-  for(let i=0;i<6;i++)setTimeout(explode,i*300);
+  for(let i=0;i<6;i++) setTimeout(explode,i*300);
 }
-function closeOverlay(){ 
-  o.style.display="none"; 
-  ctx.clearRect(0,0,canvas.width,canvas.height); 
-  particles=[]; 
+function closeOverlay(){
+  o.style.display="none";
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles=[];
 }
 function explode(){
   const x=Math.random()*canvas.width,y=Math.random()*canvas.height/2;
-  for(let i=0;i<80;i++)particles.push({x,y,vx:(Math.random()-.5)*6,vy:(Math.random()-.5)*6,life:60,color:`hsl(${Math.random()*360},100%,50%)`});
+  for(let i=0;i<80;i++) particles.push({x,y,vx:(Math.random()-.5)*6,vy:(Math.random()-.5)*6,life:60,color:`hsl(${Math.random()*360},100%,50%)`});
 }
 (function anim(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach((p,i)=>{ 
-    p.x+=p.vx; p.y+=p.vy; p.life--; 
-    ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,2,0,Math.PI*2); ctx.fill(); 
-    if(p.life<=0)particles.splice(i,1); 
+  particles.forEach((p,i)=>{
+    p.x+=p.vx; p.y+=p.vy; p.life--;
+    ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,2,0,Math.PI*2); ctx.fill();
+    if(p.life<=0) particles.splice(i,1);
   });
   requestAnimationFrame(anim);
 })();
 
-/* ===============================
-   KALP ARKA PLAN – MOBİL UYUMLU
-================================= */
+// Arka plan kalpleri
 const bg=document.getElementById("heartsBg"), bctx=bg.getContext("2d");
 function resize(){ bg.width=window.innerWidth; bg.height=window.innerHeight; }
-resize();
-window.addEventListener("resize",resize);
-
+resize(); window.addEventListener("resize",resize);
 const isMobile = window.innerWidth < 768;
-const heartCount = isMobile ? 55 : 30;
+const heartCount = isMobile?55:30;
 const hearts = Array.from({length:heartCount},()=>({
-  x:Math.random()*bg.width,
-  y:Math.random()*bg.height,
-  s:isMobile ? Math.random()*18+14 : Math.random()*10+6,
-  sp:isMobile ? Math.random()*0.6+0.3 : Math.random()*0.4+0.2,
-  o:isMobile ? Math.random()*0.7+0.4 : Math.random()*0.4+0.3
+  x:Math.random()*bg.width, y:Math.random()*bg.height,
+  s:isMobile?Math.random()*18+14:Math.random()*10+6,
+  sp:isMobile?Math.random()*0.6+0.3:Math.random()*0.4+0.2,
+  o:isMobile?Math.random()*0.7+0.4:Math.random()*0.4+0.3
 }));
 function drawHeart(x,y,s,o){
-  bctx.globalAlpha=o;
-  bctx.fillStyle="#ff9aa2";
-  bctx.beginPath();
-  bctx.moveTo(x,y);
-  bctx.bezierCurveTo(x-s,y-s,x-2*s,y+s/2,x,y+s);
-  bctx.bezierCurveTo(x+2*s,y+s/2,x+s,y-s,x,y);
-  bctx.fill();
+  bctx.globalAlpha=o; bctx.fillStyle="#ff9aa2"; bctx.beginPath();
+  bctx.moveTo(x,y); bctx.bezierCurveTo(x-s,y-s,x-2*s,y+s/2,x,y+s);
+  bctx.bezierCurveTo(x+2*s,y+s/2,x+s,y-s,x,y); bctx.fill();
   bctx.globalAlpha=1;
 }
 (function animateHearts(){
   bctx.clearRect(0,0,bg.width,bg.height);
-  hearts.forEach(h=>{
-    drawHeart(h.x,h.y,h.s,h.o);
-    h.y-=h.sp;
-    if(h.y<-30){ h.y=bg.height+30; h.x=Math.random()*bg.width; }
-  });
+  hearts.forEach(h=>{ drawHeart(h.x,h.y,h.s,h.o); h.y-=h.sp; if(h.y<-30){ h.y=bg.height+30; h.x=Math.random()*bg.width; } });
   requestAnimationFrame(animateHearts);
 })();
 </script>
-
 </body>
 </html>
