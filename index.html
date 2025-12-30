@@ -178,7 +178,13 @@ benim için önemli olan tek şey sensin ❤️
 <script>
 /* ⏳ SAYAÇ — TEST SAATİ 20:03 */
 const target = new Date();
-target.setMinutes(target.getMinutes() + 3); 
+target.setHours(0, 0, 0, 0);
+
+// Eğer bugün 00:00 geçtiyse, yarını hedefle
+if (new Date() > target) {
+  target.setDate(target.getDate() + 1);
+}
+
 
 const lock = document.getElementById("lockScreen");
 const cd = document.getElementById("countdown");
@@ -204,7 +210,7 @@ document.getElementById("startBtn").onclick = () => {
 };
 
 /* FOTOĞRAFLAR */
-const notes = { 1:"İlk anılarımız 💕",7:"Bu gülüş…",15:"Hep böyle olalım",22:"En sevdiğim fotoğraf" };
+const notes = { 1:"ilk yavrumuzun bardaktaki tatlı gülüşü💕",7:"Ah senin şu şumarıklıkların",15:"Hep böyle şaşırıcaksın",22:"En sevdiğimiz fotoğraf" };
 const gallery = document.getElementById("gallery");
 
 for (let i=1;i<=25;i++){
