@@ -36,7 +36,7 @@ h1 { font-size: 42px; }
   font-size: 20px;
   line-height: 1.8;
   max-width: 850px;
-  min-height: 140px;
+  min-height: 220px;
 }
 
 .music-hint { margin-top: 25px; font-size: 17px; opacity: 0.9; }
@@ -146,22 +146,40 @@ canvas { position: absolute; inset: 0; }
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
-/* TYPEWRITER */
+/* 📝 TYPEWRITER – DÜZELTİLMİŞ */
 const text = `Seni düşündüğüm her an bu sayfaya saklandı 💫
 
-Mesafeler sadece sayılardan ibaret…
-Benim için önemli olan tek şey sensin ❤️
+Belki aynı şehirde değiliz,
+belki yan yana değiliz…
+ama kalbim her zaman senin yanında ❤️
 
-Bu sayfadaki her şey,
-birlikte biriktirdiğimiz anların
-küçük bir yansıması.`;
-let i=0;
-const t=document.getElementById("typewriter");
-(function tw(){ if(i<text.length){ t.innerHTML+=text[i]=="\n"?"<br>":text[i++]; setTimeout(tw,40); } })();
+Mesafeler sadece sayılardan ibaret.
+Benim için önemli olan tek şey sensin.
+
+Bu sayfadaki her fotoğraf,
+her kelime,
+her küçük detay…
+sana olan sevgimin bir parçası.`;
+
+let i = 0;
+const tw = document.getElementById("typewriter");
+
+function typeWriter() {
+  if (i < text.length) {
+    const char = text[i];
+    tw.innerHTML += char === "\n" ? "<br>" : char;
+    i++;
+    setTimeout(typeWriter, 40);
+  }
+}
+typeWriter();
 
 /* MÜZİK */
-const audio=document.getElementById("music");
-startBtn.onclick=()=>{ audio.play(); startBtn.style.display="none"; confetti({particleCount:200,spread:90}); };
+startBtn.onclick = () => {
+  music.play();
+  startBtn.style.display = "none";
+  confetti({ particleCount: 200, spread: 90 });
+};
 
 /* FOTOĞRAFLAR */
 const notes={1:"ilk yavrumuzun bardaktaki tatlı gülüşü💕",7:"Ah senin şu şumarıklıkların",15:"Hep böyle şaşırıcaksın",22:"En sevdiğimiz fotoğraf"};
@@ -193,10 +211,6 @@ function explode(){
   particles.forEach((p,i)=>{ p.x+=p.vx; p.y+=p.vy; p.life--; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,2,0,Math.PI*2); ctx.fill(); if(p.life<=0)particles.splice(i,1); });
   requestAnimationFrame(anim);
 })();
-
-/* FİNAL */
-let done=false;
-addEventListener("scroll",()=>{ if(!done && innerHeight+scrollY>=document.body.offsetHeight-50){ done=true; final.style.opacity=1; confetti({particleCount:400,spread:140}); } });
 
 /* 💕 KALP ARKA PLAN */
 const bg=document.getElementById("heartsBg"), bctx=bg.getContext("2d");
