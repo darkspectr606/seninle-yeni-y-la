@@ -11,29 +11,30 @@ body {
   background: radial-gradient(circle at top, #ff512f, #dd2476, #1a1a2e);
   color: white;
   text-align: center;
+  overflow-x: hidden;
 }
 
 .container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: auto;
   padding: 30px 20px;
 }
 
 h1 {
   font-size: 42px;
-  margin-bottom: 10px;
 }
 
 .subtitle {
   font-size: 18px;
   opacity: 0.9;
+  margin-bottom: 20px;
 }
 
 .message {
   margin: 30px auto;
   font-size: 20px;
-  line-height: 1.7;
-  max-width: 800px;
+  line-height: 1.8;
+  max-width: 850px;
 }
 
 .music-hint {
@@ -44,7 +45,7 @@ h1 {
 
 .music-btn {
   margin: 25px 0;
-  padding: 12px 26px;
+  padding: 12px 28px;
   font-size: 16px;
   border: none;
   border-radius: 30px;
@@ -58,26 +59,61 @@ h1 {
   transform: scale(1.05);
 }
 
+/* GALERİ */
 .gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 15px;
-  margin-top: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 22px;
+  margin-top: 40px;
 }
 
-.gallery img {
-  width: 100%;
-  border-radius: 16px;
+.photo-card {
+  background: rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 10px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.45);
-  transition: transform 0.35s ease;
 }
 
-.gallery img:hover {
-  transform: scale(1.08);
+.photo-card img {
+  width: 100%;
+  border-radius: 14px;
+}
+
+.note {
+  margin-top: 8px;
+  font-size: 14px;
+  opacity: 0.9;
+  font-style: italic;
+}
+
+/* KALP + KONFETİ */
+.heart, .confetti {
+  position: fixed;
+  top: -10px;
+  animation: fall linear forwards;
+  pointer-events: none;
+}
+
+.heart {
+  color: pink;
+  font-size: 20px;
+}
+
+.confetti {
+  width: 8px;
+  height: 12px;
+  background: yellow;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
 }
 
 .footer {
-  margin: 50px 0 20px;
+  margin: 60px 0 30px;
   font-size: 18px;
   opacity: 0.9;
 }
@@ -89,16 +125,21 @@ h1 {
 <div class="container">
 
 <h1>🎄 Mutlu Yıllar Aşkım ❤️</h1>
-<div class="subtitle">Bu yıl yan yana değiliz ama kalbimiz aynı yerde</div>
+<div class="subtitle">Bu yıl yan yana değiliz… ama kalplerimiz hep aynı yerde</div>
 
 <div class="message">
-Bu siteyi sana gülümsemen için yaptım.<br>
-Birlikte geçirdiğimiz her anı, her fotoğrafı, her kahkahayı…<br><br>
-Yeni yıla girerken şunu bil:<br>
-Mesafeler sadece haritada var,<br>
-benim kalbimde ise sen hep yanı başımdasın 💫<br><br>
-2025’te de, sonraki tüm yıllarda da<br>
-en güzel anılarımız daha yeni başlıyor 💖
+Bu satırları okurken belki yanımda değilim ama<br>
+bil ki seni düşündüğüm her an, seni özlediğim her saniye buraya gizli 💫<br><br>
+
+Birlikte güldüğümüz anlar, sustuğumuz dakikalar,<br>
+hiçbir şey demeden bile anlaştığımız o bakışlar…<br><br>
+
+Mesafe bize bir şey öğrettiyse,<br>
+o da sevginin kilometre tanımadığıdır ❤️<br><br>
+
+Yeni yıla girerken dileğim çok basit:<br>
+Daha çok anı, daha çok kahkaha,<br>
+ve sonunda yine yan yana olacağımız günler ✨
 </div>
 
 <div class="music-hint">
@@ -118,24 +159,79 @@ Bu anın bir de müziği olsun istedim.
 
 <div class="footer">
 💌 Seni çok seviyorum.<br>
-İyi ki varsın, iyi ki biziz.
+Her şeyden, herkesten, her mesafeden çok.
 </div>
 
 </div>
 
 <script>
+/* MÜZİK */
 const audio = document.getElementById("music");
 const btn = document.getElementById("startBtn");
 
 btn.addEventListener("click", () => {
   audio.play();
   btn.style.display = "none";
+  startEffects();
 });
 
+/* FOTOĞRAFLAR + NOTLAR */
+const notes = {
+  1: "İlk fotoğraflarımızdan biri 💕",
+  4: "Bu gülüşe aşık oldum",
+  7: "O gün çok güzeldin",
+  12: "Birlikte en mutlu olduğum anlardan",
+  18: "Bunu hep saklayacağım",
+  23: "Yine olsa yine aynı bakardım"
+};
+
+const gallery = document.getElementById("gallery");
+
 for (let i = 1; i <= 25; i++) {
+  const card = document.createElement("div");
+  card.className = "photo-card";
+
   const img = document.createElement("img");
   img.src = `foto${i}.jpg`;
-  document.getElementById("gallery").appendChild(img);
+
+  card.appendChild(img);
+
+  if (notes[i]) {
+    const note = document.createElement("div");
+    note.className = "note";
+    note.innerText = notes[i];
+    card.appendChild(note);
+  }
+
+  gallery.appendChild(card);
+}
+
+/* KALP + KONFETİ */
+function startEffects() {
+  setInterval(() => {
+    createHeart();
+    createConfetti();
+  }, 300);
+}
+
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerText = "❤️";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = (3 + Math.random() * 3) + "s";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 6000);
+}
+
+function createConfetti() {
+  const confetti = document.createElement("div");
+  confetti.className = "confetti";
+  confetti.style.left = Math.random() * 100 + "vw";
+  confetti.style.backgroundColor = `hsl(${Math.random()*360},100%,50%)`;
+  confetti.style.animationDuration = (3 + Math.random() * 3) + "s";
+  document.body.appendChild(confetti);
+  setTimeout(() => confetti.remove(), 6000);
 }
 </script>
 
