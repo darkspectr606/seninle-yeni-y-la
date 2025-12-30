@@ -14,6 +14,27 @@ body {
   overflow-x: hidden;
 }
 
+/* 🔒 KİLİT */
+#lockScreen {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#lockScreen h2 {
+  font-size: 36px;
+}
+
+#countdown {
+  font-size: 48px;
+  margin-top: 20px;
+}
+
 .container {
   max-width: 1200px;
   margin: auto;
@@ -51,7 +72,6 @@ h1 {
   background: #ffcc70;
   color: #222;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
 }
 
 /* GALERİ */
@@ -112,6 +132,12 @@ canvas {
 
 <body>
 
+<!-- 🔒 KİLİT EKRANI -->
+<div id="lockScreen">
+  <h2>Birazdan… ❤️</h2>
+  <div id="countdown">Yükleniyor…</div>
+</div>
+
 <div class="container">
 
 <h1>🎄 Mutlu Yıllar Aşkım ❤️</h1>
@@ -124,8 +150,7 @@ benim için önemli olan tek şey sensin ❤️
 </div>
 
 <div class="music-hint">
-🎶 Devam etmeden önce, aşağıdaki tuşa dokunur musun?<br>
-Bu anın bir de müziği olsun istedim.
+🎶 Devam etmeden önce, aşağıdaki tuşa dokunur musun?
 </div>
 
 <button class="music-btn" id="startBtn">💖 Dokun ve Anımız Başlasın 🎶</button>
@@ -148,7 +173,29 @@ Bu anın bir de müziği olsun istedim.
   <img id="overlayImg">
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
 <script>
+/* ⏳ SAYAÇ — TEST SAATİ 20:03 */
+const target = new Date();
+target.setHours(20, 3, 0, 0); // ✅ DENEME
+
+const lock = document.getElementById("lockScreen");
+const cd = document.getElementById("countdown");
+
+const interval = setInterval(() => {
+  const diff = target - new Date();
+  if (diff <= 0) {
+    clearInterval(interval);
+    lock.style.display = "none";
+    confetti({ particleCount: 250, spread: 100 });
+    return;
+  }
+  const m = Math.floor(diff / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  cd.innerText = `${m} dk ${s} sn`;
+}, 1000);
+
 /* MÜZİK */
 const audio = document.getElementById("music");
 document.getElementById("startBtn").onclick = () => {
@@ -157,72 +204,51 @@ document.getElementById("startBtn").onclick = () => {
 };
 
 /* FOTOĞRAFLAR */
-const notes = {
-  1: "İlk yavrumuz ve bardağın içinde ki tatlı pozu💕",
-  7: "Ah senin bu şımarıklıkların o  kadar tatlı ki",
-  15: "Hep böyle şaşırıcaksın",
-  22: "En sevdiğimiz fotoğraf"
-};
-
+const notes = { 1:"İlk anılarımız 💕",7:"Bu gülüş…",15:"Hep böyle olalım",22:"En sevdiğim fotoğraf" };
 const gallery = document.getElementById("gallery");
 
-for (let i = 1; i <= 25; i++) {
-  const card = document.createElement("div");
-  card.className = "photo-card";
-
-  const img = document.createElement("img");
-  img.src = `foto${i}.jpg`;
-  img.onclick = () => openOverlay(img.src);
-
+for (let i=1;i<=25;i++){
+  const card=document.createElement("div");
+  card.className="photo-card";
+  const img=document.createElement("img");
+  img.src=`foto${i}.jpg`;
+  img.onclick=()=>openOverlay(img.src);
   card.appendChild(img);
-
-  if (notes[i]) {
-    const note = document.createElement("div");
-    note.className = "note";
-    note.innerText = notes[i];
-    card.appendChild(note);
+  if(notes[i]){
+    const n=document.createElement("div");
+    n.className="note";
+    n.innerText=notes[i];
+    card.appendChild(n);
   }
-
   gallery.appendChild(card);
 }
 
-/* OVERLAY */
-const overlay = document.getElementById("overlay");
-const overlayImg = document.getElementById("overlayImg");
+/* OVERLAY + HAVAİ FİŞEK */
+const overlay=document.getElementById("overlay");
+const overlayImg=document.getElementById("overlayImg");
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
 
-function openOverlay(src) {
-  overlay.style.display = "flex";
-  overlayImg.src = src;
-  startFireworks();
+function openOverlay(src){
+  overlay.style.display="flex";
+  overlayImg.src=src;
+  canvas.width=innerWidth;
+  canvas.height=innerHeight;
+  for(let i=0;i<8;i++)setTimeout(explode,i*250);
 }
 
-function closeOverlay() {
-  overlay.style.display = "none";
+function closeOverlay(){
+  overlay.style.display="none";
   ctx.clearRect(0,0,canvas.width,canvas.height);
 }
 
-/* HAVAİ FİŞEK */
-const canvas = document.getElementById("fireworks");
-const ctx = canvas.getContext("2d");
-
-function startFireworks() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  for (let i = 0; i < 8; i++) {
-    setTimeout(explode, i * 300);
-  }
-}
-
-function explode() {
-  const x = Math.random() * canvas.width;
-  const y = Math.random() * canvas.height / 2;
-  for (let i = 0; i < 30; i++) {
-    const angle = Math.random() * Math.PI * 2;
-    const speed = Math.random() * 4 + 2;
-    ctx.fillStyle = `hsl(${Math.random()*360},100%,50%)`;
+function explode(){
+  const x=Math.random()*canvas.width;
+  const y=Math.random()*canvas.height/2;
+  for(let i=0;i<30;i++){
+    ctx.fillStyle=`hsl(${Math.random()*360},100%,50%)`;
     ctx.beginPath();
-    ctx.arc(x + Math.cos(angle)*speed*10, y + Math.sin(angle)*speed*10, 2, 0, Math.PI*2);
+    ctx.arc(x,y,2,0,Math.PI*2);
     ctx.fill();
   }
 }
