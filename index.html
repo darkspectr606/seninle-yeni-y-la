@@ -14,33 +14,10 @@ body {
   overflow-x: hidden;
 }
 
-/* 🔒 KİLİT */
-#lockScreen {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,1); /* TAM SİYAH */
-  z-index: 2000;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-#lockScreen h2 {
-  font-size: 36px;
-}
-
-#countdown {
-  font-size: 48px;
-  margin-top: 20px;
-}
-
-/* 🔥 SİTE BAŞTA GİZLİ */
 .container {
   max-width: 1200px;
   margin: auto;
   padding: 30px 20px;
-  visibility: hidden; /* 👈 kritik */
 }
 
 h1 {
@@ -52,11 +29,13 @@ h1 {
   opacity: 0.9;
 }
 
+/* TYPEWRITER */
 .message {
   margin: 30px auto;
   font-size: 20px;
   line-height: 1.8;
   max-width: 850px;
+  min-height: 140px;
 }
 
 .music-hint {
@@ -126,6 +105,14 @@ canvas {
   inset: 0;
 }
 
+/* FİNAL */
+#final {
+  margin: 120px 0 80px;
+  font-size: 36px;
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+
 .footer {
   margin: 50px 0;
 }
@@ -134,22 +121,12 @@ canvas {
 
 <body>
 
-<!-- 🔒 KİLİT EKRANI -->
-<div id="lockScreen">
-  <h2>Birazdan… ❤️</h2>
-  <div id="countdown">Yükleniyor…</div>
-</div>
-
 <div class="container">
 
 <h1>🎄 Mutlu Yıllar Aşkım ❤️</h1>
 <div class="subtitle">Bu yıl yan yana değiliz… ama kalplerimiz hep aynı yerde</div>
 
-<div class="message">
-Seni düşündüğüm her an bu sayfaya saklandı 💫<br><br>
-Mesafeler sadece sayılardan ibaret,<br>
-benim için önemli olan tek şey sensin ❤️
-</div>
+<div class="message" id="typewriter"></div>
 
 <div class="music-hint">
 🎶 Devam etmeden önce, aşağıdaki tuşa dokunur musun?
@@ -162,6 +139,8 @@ benim için önemli olan tek şey sensin ❤️
 </audio>
 
 <div class="gallery" id="gallery"></div>
+
+<div id="final">❤️ İyi ki varsın… ❤️</div>
 
 <div class="footer">
 💌 Seni çok seviyorum.
@@ -178,39 +157,35 @@ benim için önemli olan tek şey sensin ❤️
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
-/* ⏳ SAYAÇ — TEST */
-const target = new Date();
-target.setHours(0, 0, 0, 0);
+/* TYPEWRITER */
+const text = `Seni düşündüğüm her an bu sayfaya saklandı 💫
 
-if (new Date() > target) {
-  target.setDate(target.getDate() + 1);
-}
+Mesafeler sadece sayılardan ibaret…
+Benim için önemli olan tek şey sensin ❤️
 
-const lock = document.getElementById("lockScreen");
-const cd = document.getElementById("countdown");
-const container = document.querySelector(".container");
+Bu sayfadaki her şey,
+birlikte biriktirdiğimiz anların
+küçük bir yansıması.`;
 
-const interval = setInterval(() => {
-  const diff = target - new Date();
+let i = 0;
+const speed = 40;
+const target = document.getElementById("typewriter");
 
-  if (diff <= 0) {
-    clearInterval(interval);
-    lock.style.display = "none";
-    container.style.visibility = "visible"; /* 👈 site açılıyor */
-    confetti({ particleCount: 250, spread: 100 });
-    return;
+function typeWriter() {
+  if (i < text.length) {
+    target.innerHTML += text.charAt(i) === "\n" ? "<br>" : text.charAt(i);
+    i++;
+    setTimeout(typeWriter, speed);
   }
-
-  const m = Math.floor(diff / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
-  cd.innerText = `${m} dk ${s} sn`;
-}, 1000);
+}
+typeWriter();
 
 /* MÜZİK */
 const audio = document.getElementById("music");
 document.getElementById("startBtn").onclick = () => {
   audio.play();
   document.getElementById("startBtn").style.display = "none";
+  confetti({ particleCount: 200, spread: 90 });
 };
 
 /* FOTOĞRAFLAR */
@@ -223,18 +198,20 @@ const notes = {
 
 const gallery = document.getElementById("gallery");
 
-for (let i=1;i<=25;i++){
-  const card=document.createElement("div");
-  card.className="photo-card";
-  const img=document.createElement("img");
-  img.src=`foto${i}.jpg`;
-  img.onclick=()=>openOverlay(img.src);
+for (let i = 1; i <= 25; i++) {
+  const card = document.createElement("div");
+  card.className = "photo-card";
+
+  const img = document.createElement("img");
+  img.src = `foto${i}.jpg`;
+  img.onclick = () => openOverlay(img.src);
+
   card.appendChild(img);
 
-  if(notes[i]){
-    const n=document.createElement("div");
-    n.className="note";
-    n.innerText=notes[i];
+  if (notes[i]) {
+    const n = document.createElement("div");
+    n.className = "note";
+    n.innerText = notes[i];
     card.appendChild(n);
   }
 
@@ -242,34 +219,45 @@ for (let i=1;i<=25;i++){
 }
 
 /* OVERLAY + HAVAİ FİŞEK */
-const overlay=document.getElementById("overlay");
-const overlayImg=document.getElementById("overlayImg");
-const canvas=document.getElementById("fireworks");
-const ctx=canvas.getContext("2d");
+const overlay = document.getElementById("overlay");
+const overlayImg = document.getElementById("overlayImg");
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
 
-function openOverlay(src){
-  overlay.style.display="flex";
-  overlayImg.src=src;
-  canvas.width=innerWidth;
-  canvas.height=innerHeight;
-  for(let i=0;i<8;i++) setTimeout(explode,i*250);
+function openOverlay(src) {
+  overlay.style.display = "flex";
+  overlayImg.src = src;
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+  for (let i = 0; i < 8; i++) setTimeout(explode, i * 250);
 }
 
-function closeOverlay(){
-  overlay.style.display="none";
+function closeOverlay() {
+  overlay.style.display = "none";
   ctx.clearRect(0,0,canvas.width,canvas.height);
 }
 
-function explode(){
-  const x=Math.random()*canvas.width;
-  const y=Math.random()*canvas.height/2;
-  for(let i=0;i<30;i++){
-    ctx.fillStyle=`hsl(${Math.random()*360},100%,50%)`;
+function explode() {
+  const x = Math.random() * canvas.width;
+  const y = Math.random() * canvas.height / 2;
+  for (let i = 0; i < 30; i++) {
+    ctx.fillStyle = `hsl(${Math.random()*360},100%,50%)`;
     ctx.beginPath();
-    ctx.arc(x,y,2,0,Math.PI*2);
+    ctx.arc(x, y, 2, 0, Math.PI*2);
     ctx.fill();
   }
 }
+
+/* FİNAL SAHNESİ */
+let finalPlayed = false;
+window.addEventListener("scroll", () => {
+  if (finalPlayed) return;
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
+    finalPlayed = true;
+    document.getElementById("final").style.opacity = 1;
+    confetti({ particleCount: 400, spread: 140 });
+  }
+});
 </script>
 
 </body>
