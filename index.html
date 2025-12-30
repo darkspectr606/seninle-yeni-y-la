@@ -36,6 +36,12 @@ h1 {
   max-width: 800px;
 }
 
+.music-hint {
+  margin-top: 25px;
+  font-size: 17px;
+  opacity: 0.9;
+}
+
 .music-btn {
   margin: 25px 0;
   padding: 12px 26px;
@@ -95,7 +101,14 @@ benim kalbimde ise sen hep yanı başımdasın 💫<br><br>
 en güzel anılarımız daha yeni başlıyor 💖
 </div>
 
-<button class="music-btn" onclick="toggleMusic()">🎶 Müziği Başlat / Durdur</button>
+<div class="music-hint">
+🎶 Devam etmeden önce, aşağıdaki tuşa dokunur musun?<br>
+Bu anın bir de müziği olsun istedim.
+</div>
+
+<button class="music-btn" id="startBtn">
+💖 Dokun ve Anımız Başlasın 🎶
+</button>
 
 <audio id="music" loop>
   <source src="music.mp3" type="audio/mpeg">
@@ -112,13 +125,12 @@ en güzel anılarımız daha yeni başlıyor 💖
 
 <script>
 const audio = document.getElementById("music");
-function toggleMusic() {
-  if (audio.paused) {
-    audio.play();
-  } else {
-    audio.pause();
-  }
-}
+const btn = document.getElementById("startBtn");
+
+btn.addEventListener("click", () => {
+  audio.play();
+  btn.style.display = "none";
+});
 
 for (let i = 1; i <= 25; i++) {
   const img = document.createElement("img");
