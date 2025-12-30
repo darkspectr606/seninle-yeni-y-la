@@ -237,16 +237,45 @@ function closeOverlay() {
   ctx.clearRect(0,0,canvas.width,canvas.height);
 }
 
+let particles = [];
+
 function explode() {
   const x = Math.random() * canvas.width;
   const y = Math.random() * canvas.height / 2;
-  for (let i = 0; i < 30; i++) {
-    ctx.fillStyle = `hsl(${Math.random()*360},100%,50%)`;
-    ctx.beginPath();
-    ctx.arc(x, y, 2, 0, Math.PI*2);
-    ctx.fill();
+
+  for (let i = 0; i < 80; i++) {
+    particles.push({
+      x,
+      y,
+      vx: (Math.random() - 0.5) * 6,
+      vy: (Math.random() - 0.5) * 6,
+      life: 60,
+      color: `hsl(${Math.random() * 360},100%,50%)`
+    });
   }
 }
+
+function animateFireworks() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach((p, index) => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.life--;
+
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    if (p.life <= 0) particles.splice(index, 1);
+  });
+
+  requestAnimationFrame(animateFireworks);
+}
+
+animateFireworks();
+
 
 /* FİNAL SAHNESİ */
 let finalPlayed = false;
