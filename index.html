@@ -16,8 +16,8 @@ body, html {
   overflow-x: hidden;
 }
 
-/* GECE YARISI SAYAÇ */
-#countdownOverlay {
+/* SÜRPRİZ EKRANI */
+#blackOverlay {
   position: fixed;
   inset: 0;
   background: black;
@@ -27,8 +27,18 @@ body, html {
   z-index: 9999;
   flex-direction: column;
   color: white;
-  font-size: 48px;
-  transition: opacity 2s ease;
+  font-size: 32px;
+}
+
+#surpriseBtn {
+  margin-top: 20px;
+  padding: 16px 32px;
+  font-size: 20px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  background: #ffcc70;
+  color: #222;
 }
 
 /* ANA İÇERİK */
@@ -71,12 +81,15 @@ body, html {
   background: rgba(255,255,255,0.08);
   border-radius: 18px;
   padding: 10px;
+  transition: transform 0.3s ease;
 }
 .photo-card img {
   width: 100%;
   border-radius: 14px;
   cursor: pointer;
 }
+.photo-card:hover { transform: scale(1.05); }
+
 .note {
   font-size: 14px;
   margin-top: 6px;
@@ -99,6 +112,7 @@ body, html {
   border-radius: 16px;
   z-index: 2;
 }
+
 canvas { position: absolute; inset: 0; }
 
 #final {
@@ -121,8 +135,9 @@ h1 { font-size: 42px; }
 </head>
 <body>
 
-<div id="countdownOverlay">
-  ⏳ Hedef zamana kadar: <span id="countdown">00:00:00</span>
+<div id="blackOverlay">
+  🎉 Sürprizini görmeye hazır mısın?
+  <button id="surpriseBtn">Evet, göster!</button>
 </div>
 
 <canvas id="heartsBg"></canvas>
@@ -159,55 +174,25 @@ h1 { font-size: 42px; }
 
 <script>
 /* ===============================
-   TEST SAYAÇ (00:30)
+   SÜRPRİZ BUTONU
 ================================= */
-const countdownEl = document.getElementById("countdown");
-const overlay = document.getElementById("countdownOverlay");
+const blackOverlay = document.getElementById("blackOverlay");
+const surpriseBtn = document.getElementById("surpriseBtn");
 const mainContent = document.getElementById("mainContent");
-let countdownDone = false;
 
-// HEDEF SAAT 00:30
-const now = new Date();
-let target = new Date();
-target.setHours(0,30,0,0);
-if(target <= now) target.setDate(target.getDate() + 1);
-
-const countdownInterval = setInterval(() => {
-  if(countdownDone) return;
-
-  const diff = target - new Date();
-
-  if(diff <= 0){
-    countdownDone = true;
-    clearInterval(countdownInterval);
-
-    overlay.style.transition = "opacity 2s ease";
-    overlay.style.opacity = "0";
-
-    setTimeout(() => {
-      overlay.style.display = "none";
-      mainContent.style.opacity = "1";
-      mainContent.style.pointerEvents = "auto";
-      document.body.style.overflow = "auto"; // scroll açıldı
-
-      // typewriter başlat
-      typeWriter();
-
-      // konfeti sürprizi
-      for(let i=0;i<3;i++){
-        setTimeout(()=>confetti({ particleCount: 150, spread: 120 }), i*500);
-      }
-    },2000);
-
-    return;
-  }
-
-  const hours = Math.floor(diff / (1000*60*60));
-  const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
-  const seconds = Math.floor((diff % (1000*60)) / 1000);
-  countdownEl.textContent = 
-    `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
-},1000);
+surpriseBtn.addEventListener("click", () => {
+  confetti({ particleCount: 200, spread: 90 });
+  blackOverlay.style.transition = "opacity 2s ease";
+  blackOverlay.style.opacity = "0";
+  
+  setTimeout(() => {
+    blackOverlay.style.display = "none";
+    mainContent.style.opacity = "1";
+    mainContent.style.pointerEvents = "auto";
+    document.body.style.overflow = "auto";
+    typeWriter();
+  }, 2000);
+});
 
 /* ===============================
    TYPEWRITER
