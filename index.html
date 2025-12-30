@@ -27,7 +27,6 @@ h1 {
 .subtitle {
   font-size: 18px;
   opacity: 0.9;
-  margin-bottom: 20px;
 }
 
 .message {
@@ -55,10 +54,6 @@ h1 {
   box-shadow: 0 6px 20px rgba(0,0,0,0.4);
 }
 
-.music-btn:hover {
-  transform: scale(1.05);
-}
-
 /* GALERİ */
 .gallery {
   display: grid;
@@ -71,51 +66,46 @@ h1 {
   background: rgba(255,255,255,0.08);
   border-radius: 18px;
   padding: 10px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.45);
 }
 
 .photo-card img {
   width: 100%;
   border-radius: 14px;
+  cursor: pointer;
 }
 
 .note {
-  margin-top: 8px;
   font-size: 14px;
+  margin-top: 6px;
   opacity: 0.9;
   font-style: italic;
 }
 
-/* KALP + KONFETİ */
-.heart, .confetti {
+/* TAM EKRAN */
+.overlay {
   position: fixed;
-  top: -10px;
-  animation: fall linear forwards;
-  pointer-events: none;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
 }
 
-.heart {
-  color: pink;
-  font-size: 20px;
+.overlay img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 16px;
+  z-index: 2;
 }
 
-.confetti {
-  width: 8px;
-  height: 12px;
-  background: yellow;
-}
-
-@keyframes fall {
-  to {
-    transform: translateY(110vh) rotate(360deg);
-    opacity: 0;
-  }
+canvas {
+  position: absolute;
+  inset: 0;
 }
 
 .footer {
-  margin: 60px 0 30px;
-  font-size: 18px;
-  opacity: 0.9;
+  margin: 50px 0;
 }
 </style>
 </head>
@@ -128,18 +118,9 @@ h1 {
 <div class="subtitle">Bu yıl yan yana değiliz… ama kalplerimiz hep aynı yerde</div>
 
 <div class="message">
-Bu satırları okurken belki yanımda değilim ama<br>
-bil ki seni düşündüğüm her an, seni özlediğim her saniye buraya gizli 💫<br><br>
-
-Birlikte güldüğümüz anlar, sustuğumuz dakikalar,<br>
-hiçbir şey demeden bile anlaştığımız o bakışlar…<br><br>
-
-Mesafe bize bir şey öğrettiyse,<br>
-o da sevginin kilometre tanımadığıdır ❤️<br><br>
-
-Yeni yıla girerken dileğim çok basit:<br>
-Daha çok anı, daha çok kahkaha,<br>
-ve sonunda yine yan yana olacağımız günler ✨
+Seni düşündüğüm her an bu sayfaya saklandı 💫<br><br>
+Mesafeler sadece sayılardan ibaret,<br>
+benim için önemli olan tek şey sensin ❤️
 </div>
 
 <div class="music-hint">
@@ -147,9 +128,7 @@ ve sonunda yine yan yana olacağımız günler ✨
 Bu anın bir de müziği olsun istedim.
 </div>
 
-<button class="music-btn" id="startBtn">
-💖 Dokun ve Anımız Başlasın 🎶
-</button>
+<button class="music-btn" id="startBtn">💖 Dokun ve Anımız Başlasın 🎶</button>
 
 <audio id="music" loop>
   <source src="music.mp3" type="audio/mpeg">
@@ -158,31 +137,31 @@ Bu anın bir de müziği olsun istedim.
 <div class="gallery" id="gallery"></div>
 
 <div class="footer">
-💌 Seni çok seviyorum.<br>
-Her şeyden, herkesten, her mesafeden çok.
+💌 Seni çok seviyorum.
 </div>
 
+</div>
+
+<!-- TAM EKRAN -->
+<div class="overlay" id="overlay" onclick="closeOverlay()">
+  <canvas id="fireworks"></canvas>
+  <img id="overlayImg">
 </div>
 
 <script>
 /* MÜZİK */
 const audio = document.getElementById("music");
-const btn = document.getElementById("startBtn");
-
-btn.addEventListener("click", () => {
+document.getElementById("startBtn").onclick = () => {
   audio.play();
-  btn.style.display = "none";
-  startEffects();
-});
+  document.getElementById("startBtn").style.display = "none";
+};
 
-/* FOTOĞRAFLAR + NOTLAR */
+/* FOTOĞRAFLAR */
 const notes = {
-  1: "İlk fotoğraflarımızdan biri 💕",
-  4: "Bu gülüşe aşık oldum",
-  7: "O gün çok güzeldin",
-  12: "Birlikte en mutlu olduğum anlardan",
-  18: "Bunu hep saklayacağım",
-  23: "Yine olsa yine aynı bakardım"
+  1: "İlk anılarımız 💕",
+  7: "Bu gülüş…",
+  15: "Hep böyle olalım",
+  22: "En sevdiğim fotoğraf"
 };
 
 const gallery = document.getElementById("gallery");
@@ -193,6 +172,7 @@ for (let i = 1; i <= 25; i++) {
 
   const img = document.createElement("img");
   img.src = `foto${i}.jpg`;
+  img.onclick = () => openOverlay(img.src);
 
   card.appendChild(img);
 
@@ -206,32 +186,45 @@ for (let i = 1; i <= 25; i++) {
   gallery.appendChild(card);
 }
 
-/* KALP + KONFETİ */
-function startEffects() {
-  setInterval(() => {
-    createHeart();
-    createConfetti();
-  }, 300);
+/* OVERLAY */
+const overlay = document.getElementById("overlay");
+const overlayImg = document.getElementById("overlayImg");
+
+function openOverlay(src) {
+  overlay.style.display = "flex";
+  overlayImg.src = src;
+  startFireworks();
 }
 
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.innerText = "❤️";
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.animationDuration = (3 + Math.random() * 3) + "s";
-  document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 6000);
+function closeOverlay() {
+  overlay.style.display = "none";
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 }
 
-function createConfetti() {
-  const confetti = document.createElement("div");
-  confetti.className = "confetti";
-  confetti.style.left = Math.random() * 100 + "vw";
-  confetti.style.backgroundColor = `hsl(${Math.random()*360},100%,50%)`;
-  confetti.style.animationDuration = (3 + Math.random() * 3) + "s";
-  document.body.appendChild(confetti);
-  setTimeout(() => confetti.remove(), 6000);
+/* HAVAİ FİŞEK */
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+
+function startFireworks() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  for (let i = 0; i < 8; i++) {
+    setTimeout(explode, i * 300);
+  }
+}
+
+function explode() {
+  const x = Math.random() * canvas.width;
+  const y = Math.random() * canvas.height / 2;
+  for (let i = 0; i < 30; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = Math.random() * 4 + 2;
+    ctx.fillStyle = `hsl(${Math.random()*360},100%,50%)`;
+    ctx.beginPath();
+    ctx.arc(x + Math.cos(angle)*speed*10, y + Math.sin(angle)*speed*10, 2, 0, Math.PI*2);
+    ctx.fill();
+  }
 }
 </script>
 
