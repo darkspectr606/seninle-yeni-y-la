@@ -87,6 +87,7 @@ body, html {
   width: 100%;
   border-radius: 14px;
   cursor: pointer;
+  object-fit: cover;
 }
 .photo-card:hover { transform: scale(1.05); }
 
@@ -104,11 +105,12 @@ body, html {
   display: none;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 9999;
 }
 .overlay img {
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 95%;
+  max-height: 95%;
+  object-fit: contain;
   border-radius: 16px;
   z-index: 2;
 }
@@ -174,23 +176,30 @@ h1 { font-size: 42px; }
 
 <script>
 /* ===============================
-   SÜRPRİZ BUTONU
+   SÜRPRİZ BUTONU + FADE OUT
 ================================= */
 const blackOverlay = document.getElementById("blackOverlay");
 const surpriseBtn = document.getElementById("surpriseBtn");
 const mainContent = document.getElementById("mainContent");
+const startBtn = document.getElementById("startBtn");
+const music = document.getElementById("music");
 
 surpriseBtn.addEventListener("click", () => {
   confetti({ particleCount: 200, spread: 90 });
+
   blackOverlay.style.transition = "opacity 2s ease";
   blackOverlay.style.opacity = "0";
-  
+
   setTimeout(() => {
     blackOverlay.style.display = "none";
     mainContent.style.opacity = "1";
     mainContent.style.pointerEvents = "auto";
     document.body.style.overflow = "auto";
+
     typeWriter();
+    
+    // Müzik butonunu kullanıcı etkileşimi için göster
+    startBtn.style.display = "inline-block";
   }, 2000);
 });
 
@@ -224,10 +233,8 @@ function typeWriter() {
 /* ===============================
    MÜZİK
 ================================= */
-const startBtn = document.getElementById("startBtn");
-const music = document.getElementById("music");
 startBtn.onclick = () => {
-  music.play();
+  music.play().catch(()=>{}); // mobilde güvenli tetikleme
   startBtn.style.display = "none";
   confetti({ particleCount: 200, spread: 90 });
 };
@@ -253,7 +260,7 @@ const canvas=document.getElementById("fireworks"), ctx=canvas.getContext("2d");
 let particles=[];
 function openOverlay(src){
   o.style.display="flex"; oi.src=src;
-  canvas.width=innerWidth; canvas.height=innerHeight;
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
   for(let i=0;i<6;i++)setTimeout(explode,i*300);
 }
 function closeOverlay(){ 
@@ -279,11 +286,11 @@ function explode(){
    KALP ARKA PLAN – MOBİL UYUMLU
 ================================= */
 const bg=document.getElementById("heartsBg"), bctx=bg.getContext("2d");
-function resize(){ bg.width=innerWidth; bg.height=innerHeight; }
+function resize(){ bg.width=window.innerWidth; bg.height=window.innerHeight; }
 resize();
-addEventListener("resize",resize);
+window.addEventListener("resize",resize);
 
-const isMobile = innerWidth < 768;
+const isMobile = window.innerWidth < 768;
 const heartCount = isMobile ? 55 : 30;
 const hearts = Array.from({length:heartCount},()=>({
   x:Math.random()*bg.width,
