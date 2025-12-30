@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Mutlu Yıllar Aşkım ❤️</title>
 <style>
-/* TEMEL STİLLER */
 body, html {
   margin: 0;
   padding: 0;
@@ -17,7 +16,6 @@ body, html {
   overflow-x: hidden;
 }
 
-/* GECE YARISI SAYAÇ EKRANI */
 #countdownOverlay {
   position: fixed;
   inset: 0;
@@ -31,12 +29,8 @@ body, html {
   font-size: 48px;
   transition: opacity 2s ease;
 }
-#countdownOverlay.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
+#countdownOverlay.hidden { opacity: 0; pointer-events: none; }
 
-/* KAPSAYICI */
 .container {
   max-width: 1200px;
   margin: auto;
@@ -45,7 +39,6 @@ body, html {
   transition: opacity 2s ease;
 }
 
-/* TYPEWRITER */
 .message {
   margin: 30px auto;
   font-size: 20px;
@@ -54,7 +47,6 @@ body, html {
   min-height: 220px;
 }
 
-/* MÜZİK */
 .music-hint { margin-top: 25px; font-size: 17px; opacity: 0.9; }
 .music-btn {
   margin: 25px 0;
@@ -67,7 +59,6 @@ body, html {
   cursor: pointer;
 }
 
-/* GALERİ */
 .gallery {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -91,7 +82,6 @@ body, html {
   font-style: italic;
 }
 
-/* OVERLAY */
 .overlay {
   position: fixed;
   inset: 0;
@@ -109,7 +99,6 @@ body, html {
 }
 canvas { position: absolute; inset: 0; }
 
-/* FİNAL */
 #final {
   margin: 120px 0 80px;
   font-size: 36px;
@@ -117,7 +106,6 @@ canvas { position: absolute; inset: 0; }
   transition: opacity 2s ease;
 }
 
-/* FOOTER */
 .footer { 
   margin: 50px 0; 
   font-size: 32px;   
@@ -125,7 +113,6 @@ canvas { position: absolute; inset: 0; }
   color: #ffddcf;    
 }
 
-/* BAŞLIK */
 h1 { font-size: 42px; }
 .subtitle { font-size: 18px; opacity: 0.9; }
 
@@ -133,7 +120,6 @@ h1 { font-size: 42px; }
 </head>
 <body>
 
-<!-- GECE YARISI SAYACI -->
 <div id="countdownOverlay">
   ⏳ Hedef zamana kadar: <span id="countdown">00:00:00</span>
 </div>
@@ -172,27 +158,23 @@ h1 { font-size: 42px; }
 
 <script>
 /* ===============================
-   GECE YARISI SAYACI (TEST 00:10)
+   TEST SAYAÇ (00:20)
 ================================= */
 const countdownEl = document.getElementById("countdown");
 const overlay = document.getElementById("countdownOverlay");
 const mainContent = document.getElementById("mainContent");
-
 let countdownDone = false;
 
-// TEST AMAÇLI: bugünkü saat 00:10
-function getTestTargetTime() {
-  const now = new Date();
-  const target = new Date();
-  target.setHours(0,10,0,0); // bugün 00:10
-  if(target < now) target.setDate(target.getDate() + 1); // geçerse ertesi gün
-  return target;
-}
+// TEST: Bugün 00:20
+const now = new Date();
+let target = new Date();
+target.setHours(0,20,0,0);
+if(target <= now) target.setDate(target.getDate() + 1);
 
 const countdownInterval = setInterval(() => {
   if(countdownDone) return;
-  const now = new Date();
-  const diff = getTestTargetTime() - now;
+
+  const diff = target - new Date();
 
   if(diff <= 0){
     countdownDone = true;
@@ -201,11 +183,11 @@ const countdownInterval = setInterval(() => {
     overlay.style.transition = "opacity 2s ease";
     overlay.style.opacity = "0";
 
-    setTimeout(()=>{
+    setTimeout(() => {
       overlay.style.display = "none";
       mainContent.style.opacity = "1";
 
-      // sürpriz animasyon
+      // konfeti sürprizi
       for(let i=0;i<3;i++){
         setTimeout(()=>confetti({ particleCount: 150, spread: 120 }), i*500);
       }
@@ -219,7 +201,7 @@ const countdownInterval = setInterval(() => {
   const seconds = Math.floor((diff % (1000*60)) / 1000);
   countdownEl.textContent = 
     `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
-}, 1000);
+},1000);
 
 /* ===============================
    TYPEWRITER
