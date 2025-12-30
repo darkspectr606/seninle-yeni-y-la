@@ -3,10 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Mutlu Yıllar Aşkım ❤️</title>
-
 <style>
-body {
+/* TEMEL STİLLER */
+body, html {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
   font-family: 'Segoe UI', sans-serif;
   background: radial-gradient(circle at top, #ff512f, #dd2476, #1a1a2e);
   color: white;
@@ -14,23 +17,35 @@ body {
   overflow-x: hidden;
 }
 
-/* 💕 ARKA PLAN KALPLER */
-#heartsBg {
+/* GECE YARISI SAYAÇ EKRANI */
+#countdownOverlay {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  flex-direction: column;
+  color: white;
+  font-size: 48px;
+  transition: opacity 2s ease;
+}
+#countdownOverlay.hidden {
+  opacity: 0;
   pointer-events: none;
 }
 
+/* KAPSAYICI */
 .container {
   max-width: 1200px;
   margin: auto;
   padding: 30px 20px;
+  opacity: 0;
+  transition: opacity 2s ease;
 }
 
-h1 { font-size: 42px; }
-.subtitle { font-size: 18px; opacity: 0.9; }
-
+/* TYPEWRITER */
 .message {
   margin: 30px auto;
   font-size: 20px;
@@ -39,8 +54,8 @@ h1 { font-size: 42px; }
   min-height: 220px;
 }
 
+/* MÜZİK */
 .music-hint { margin-top: 25px; font-size: 17px; opacity: 0.9; }
-
 .music-btn {
   margin: 25px 0;
   padding: 12px 28px;
@@ -59,19 +74,16 @@ h1 { font-size: 42px; }
   gap: 22px;
   margin-top: 40px;
 }
-
 .photo-card {
   background: rgba(255,255,255,0.08);
   border-radius: 18px;
   padding: 10px;
 }
-
 .photo-card img {
   width: 100%;
   border-radius: 14px;
   cursor: pointer;
 }
-
 .note {
   font-size: 14px;
   margin-top: 6px;
@@ -89,14 +101,12 @@ h1 { font-size: 42px; }
   align-items: center;
   z-index: 999;
 }
-
 .overlay img {
   max-width: 90%;
   max-height: 90%;
   border-radius: 16px;
   z-index: 2;
 }
-
 canvas { position: absolute; inset: 0; }
 
 /* FİNAL */
@@ -107,41 +117,50 @@ canvas { position: absolute; inset: 0; }
   transition: opacity 2s ease;
 }
 
-/* 💌 BÜYÜK FOOTER */
+/* FOOTER */
 .footer { 
   margin: 50px 0; 
-  font-size: 32px;   /* Büyütüldü */
-  font-weight: 600;  /* Kalın yapıldı */
-  color: #ffddcf;    /* Daha canlı renk */
+  font-size: 32px;   
+  font-weight: 600;  
+  color: #ffddcf;    
 }
+
+/* BAŞLIK */
+h1 { font-size: 42px; }
+.subtitle { font-size: 18px; opacity: 0.9; }
+
 </style>
 </head>
-
 <body>
+
+<!-- GECE YARISI SAYACI -->
+<div id="countdownOverlay">
+  ⏳ Gece yarısına kadar: <span id="countdown">00:00:00</span>
+</div>
 
 <canvas id="heartsBg"></canvas>
 
-<div class="container">
-<h1>🎄 Mutlu Yıllar Aşkım ❤️</h1>
-<div class="subtitle">Bu yıl yan yana değiliz… ama kalplerimiz hep aynı yerde</div>
+<div class="container" id="mainContent">
+  <h1>🎄 Mutlu Yıllar Aşkım ❤️</h1>
+  <div class="subtitle">Bu yıl yan yana değiliz… ama kalplerimiz hep aynı yerde</div>
 
-<div class="message" id="typewriter"></div>
+  <div class="message" id="typewriter"></div>
 
-<div class="music-hint">
-🎶 Devam etmeden önce, aşağıdaki tuşa dokunur musun?
-</div>
+  <div class="music-hint">
+    🎶 Devam etmeden önce, aşağıdaki tuşa dokunur musun?
+  </div>
 
-<button class="music-btn" id="startBtn">💖 Dokun ve Anımız Başlasın 🎶</button>
+  <button class="music-btn" id="startBtn">💖 Dokun ve Anımız Başlasın 🎶</button>
 
-<audio id="music" loop>
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
+  <audio id="music" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
 
-<div class="gallery" id="gallery"></div>
+  <div class="gallery" id="gallery"></div>
 
-<div id="final">❤️ İyi ki varsın… ❤️</div>
+  <div id="final">❤️ İyi ki varsın… ❤️</div>
 
-<div class="footer">💌 Seni çok seviyorum.</div>
+  <div class="footer">💌 Seni çok seviyorum.</div>
 </div>
 
 <div class="overlay" id="overlay" onclick="closeOverlay()">
@@ -152,7 +171,44 @@ canvas { position: absolute; inset: 0; }
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
-/* 📝 TYPEWRITER */
+/* ===============================
+   GECE YARISI SAYACI
+================================= */
+const countdownEl = document.getElementById("countdown");
+const overlay = document.getElementById("countdownOverlay");
+const mainContent = document.getElementById("mainContent");
+
+// Gece yarısı hedef zamanı
+function getNextMidnight() {
+  const now = new Date();
+  const midnight = new Date();
+  midnight.setHours(24,0,0,0); // 00:00:00 bir sonraki gün
+  return midnight;
+}
+
+let countdownInterval = setInterval(() => {
+  const now = new Date();
+  const diff = getNextMidnight() - now;
+  if (diff <= 0) {
+    clearInterval(countdownInterval);
+    overlay.classList.add("hidden"); // fade out
+    setTimeout(() => {
+      mainContent.style.opacity = "1";
+      // Sürpriz animasyon: kalpler + konfeti
+      for (let i=0; i<3; i++) setTimeout(()=>confetti({ particleCount: 150, spread: 120 }), i*500);
+    }, 2000); // overlay fade out süresi
+    return;
+  }
+  const hours = Math.floor(diff / (1000*60*60));
+  const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+  const seconds = Math.floor((diff % (1000*60)) / 1000);
+  countdownEl.textContent = 
+    `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+}, 1000);
+
+/* ===============================
+   TYPEWRITER
+================================= */
 const text = `Seni düşündüğüm her an bu sayfaya saklandı 💫
 
 Belki aynı şehirde değiliz,
@@ -167,27 +223,30 @@ her kelime,
 her küçük detay… 
 sana olan sevgimin bir parçası.`;
 
-let i = 0;
+let i=0;
 const tw = document.getElementById("typewriter");
-
 function typeWriter() {
-  if (i < text.length) {
-    const char = text[i];
-    tw.innerHTML += char === "\n" ? "<br>" : char;
+  if(i<text.length){
+    tw.innerHTML += text[i]==="\n" ? "<br>" : text[i];
     i++;
-    setTimeout(typeWriter, 40);
+    setTimeout(typeWriter,40);
   }
 }
-typeWriter();
 
-/* MÜZİK */
+/* ===============================
+   MÜZİK
+================================= */
+const startBtn = document.getElementById("startBtn");
+const music = document.getElementById("music");
 startBtn.onclick = () => {
   music.play();
   startBtn.style.display = "none";
   confetti({ particleCount: 200, spread: 90 });
 };
 
-/* FOTOĞRAFLAR */
+/* ===============================
+   FOTOĞRAFLAR
+================================= */
 const notes={1:"ilk yavrumuzun bardaktaki tatlı gülüşü💕",7:"Ah senin şu şumarıklıkların",15:"Hep böyle şaşırıcaksın",22:"En sevdiğimiz fotoğraf"};
 const g=document.getElementById("gallery");
 for(let i=1;i<=25;i++){
@@ -198,28 +257,26 @@ for(let i=1;i<=25;i++){
   g.appendChild(c);
 }
 
-/* OVERLAY + HAVAİ FİŞEK */
+/* ===============================
+   OVERLAY + HAVAİ FİŞEK
+================================= */
 const o=document.getElementById("overlay"), oi=document.getElementById("overlayImg");
 const canvas=document.getElementById("fireworks"), ctx=canvas.getContext("2d");
 let particles=[];
-
 function openOverlay(src){
   o.style.display="flex"; oi.src=src;
   canvas.width=innerWidth; canvas.height=innerHeight;
   for(let i=0;i<6;i++)setTimeout(explode,i*300);
 }
-
 function closeOverlay(){ 
   o.style.display="none"; 
   ctx.clearRect(0,0,canvas.width,canvas.height); 
   particles=[]; 
 }
-
 function explode(){
   const x=Math.random()*canvas.width,y=Math.random()*canvas.height/2;
   for(let i=0;i<80;i++)particles.push({x,y,vx:(Math.random()-.5)*6,vy:(Math.random()-.5)*6,life:60,color:`hsl(${Math.random()*360},100%,50%)`});
 }
-
 (function anim(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   particles.forEach((p,i)=>{ 
@@ -230,50 +287,45 @@ function explode(){
   requestAnimationFrame(anim);
 })();
 
-/* 💕 KALP ARKA PLAN – MOBİL UYUMLU */
-const bg = document.getElementById("heartsBg");
-const bctx = bg.getContext("2d");
-
-function resize() {
-  bg.width = innerWidth;
-  bg.height = innerHeight;
-}
+/* ===============================
+   KALP ARKA PLAN – MOBİL UYUMLU
+================================= */
+const bg=document.getElementById("heartsBg"), bctx=bg.getContext("2d");
+function resize(){ bg.width=innerWidth; bg.height=innerHeight; }
 resize();
-addEventListener("resize", resize);
+addEventListener("resize",resize);
 
 const isMobile = innerWidth < 768;
 const heartCount = isMobile ? 55 : 30;
-const hearts = Array.from({ length: heartCount }, () => ({
-  x: Math.random() * bg.width,
-  y: Math.random() * bg.height,
-  s: isMobile ? Math.random() * 18 + 14 : Math.random() * 10 + 6,
-  sp: isMobile ? Math.random() * 0.6 + 0.3 : Math.random() * 0.4 + 0.2,
-  o: isMobile ? Math.random() * 0.7 + 0.4 : Math.random() * 0.4 + 0.3
+const hearts = Array.from({length:heartCount},()=>({
+  x:Math.random()*bg.width,
+  y:Math.random()*bg.height,
+  s:isMobile ? Math.random()*18+14 : Math.random()*10+6,
+  sp:isMobile ? Math.random()*0.6+0.3 : Math.random()*0.4+0.2,
+  o:isMobile ? Math.random()*0.7+0.4 : Math.random()*0.4+0.3
 }));
-
-function drawHeart(x, y, s, o) {
-  bctx.globalAlpha = o;
-  bctx.fillStyle = "#ff9aa2";
+function drawHeart(x,y,s,o){
+  bctx.globalAlpha=o;
+  bctx.fillStyle="#ff9aa2";
   bctx.beginPath();
-  bctx.moveTo(x, y);
-  bctx.bezierCurveTo(x - s, y - s, x - s * 2, y + s / 2, x, y + s);
-  bctx.bezierCurveTo(x + s * 2, y + s / 2, x + s, y - s, x, y);
+  bctx.moveTo(x,y);
+  bctx.bezierCurveTo(x-s,y-s,x-2*s,y+s/2,x,y+s);
+  bctx.bezierCurveTo(x+2*s,y+s/2,x+s,y-s,x,y);
   bctx.fill();
-  bctx.globalAlpha = 1;
+  bctx.globalAlpha=1;
 }
-
-(function animateHearts() {
-  bctx.clearRect(0, 0, bg.width, bg.height);
-  hearts.forEach(h => {
-    drawHeart(h.x, h.y, h.s, h.o);
-    h.y -= h.sp;
-    if (h.y < -30) {
-      h.y = bg.height + 30;
-      h.x = Math.random() * bg.width;
-    }
+(function animateHearts(){
+  bctx.clearRect(0,0,bg.width,bg.height);
+  hearts.forEach(h=>{
+    drawHeart(h.x,h.y,h.s,h.o);
+    h.y-=h.sp;
+    if(h.y<-30){ h.y=bg.height+30; h.x=Math.random()*bg.width; }
   });
   requestAnimationFrame(animateHearts);
 })();
+
+/* TYPEWRITER SAYAÇ SONRASI BAŞLAT */
+setTimeout(typeWriter,100); // sayfa açılır açılmaz başlar
 </script>
 
 </body>
