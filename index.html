@@ -14,22 +14,23 @@ body {
   overflow-x: hidden;
 }
 
+/* 💕 ARKA PLAN KALPLER */
+#heartsBg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
 .container {
   max-width: 1200px;
   margin: auto;
   padding: 30px 20px;
 }
 
-h1 {
-  font-size: 42px;
-}
+h1 { font-size: 42px; }
+.subtitle { font-size: 18px; opacity: 0.9; }
 
-.subtitle {
-  font-size: 18px;
-  opacity: 0.9;
-}
-
-/* TYPEWRITER */
 .message {
   margin: 30px auto;
   font-size: 20px;
@@ -38,11 +39,7 @@ h1 {
   min-height: 140px;
 }
 
-.music-hint {
-  margin-top: 25px;
-  font-size: 17px;
-  opacity: 0.9;
-}
+.music-hint { margin-top: 25px; font-size: 17px; opacity: 0.9; }
 
 .music-btn {
   margin: 25px 0;
@@ -82,7 +79,7 @@ h1 {
   font-style: italic;
 }
 
-/* TAM EKRAN */
+/* OVERLAY */
 .overlay {
   position: fixed;
   inset: 0;
@@ -100,10 +97,7 @@ h1 {
   z-index: 2;
 }
 
-canvas {
-  position: absolute;
-  inset: 0;
-}
+canvas { position: absolute; inset: 0; }
 
 /* FİNAL */
 #final {
@@ -113,16 +107,15 @@ canvas {
   transition: opacity 2s ease;
 }
 
-.footer {
-  margin: 50px 0;
-}
+.footer { margin: 50px 0; }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<canvas id="heartsBg"></canvas>
 
+<div class="container">
 <h1>🎄 Mutlu Yıllar Aşkım ❤️</h1>
 <div class="subtitle">Bu yıl yan yana değiliz… ama kalplerimiz hep aynı yerde</div>
 
@@ -142,13 +135,9 @@ canvas {
 
 <div id="final">❤️ İyi ki varsın… ❤️</div>
 
-<div class="footer">
-💌 Seni çok seviyorum.
+<div class="footer">💌 Seni çok seviyorum.</div>
 </div>
 
-</div>
-
-<!-- TAM EKRAN -->
 <div class="overlay" id="overlay" onclick="closeOverlay()">
   <canvas id="fireworks"></canvas>
   <img id="overlayImg">
@@ -166,127 +155,65 @@ Benim için önemli olan tek şey sensin ❤️
 Bu sayfadaki her şey,
 birlikte biriktirdiğimiz anların
 küçük bir yansıması.`;
-
-let i = 0;
-const speed = 40;
-const target = document.getElementById("typewriter");
-
-function typeWriter() {
-  if (i < text.length) {
-    target.innerHTML += text.charAt(i) === "\n" ? "<br>" : text.charAt(i);
-    i++;
-    setTimeout(typeWriter, speed);
-  }
-}
-typeWriter();
+let i=0;
+const t=document.getElementById("typewriter");
+(function tw(){ if(i<text.length){ t.innerHTML+=text[i]=="\n"?"<br>":text[i++]; setTimeout(tw,40); } })();
 
 /* MÜZİK */
-const audio = document.getElementById("music");
-document.getElementById("startBtn").onclick = () => {
-  audio.play();
-  document.getElementById("startBtn").style.display = "none";
-  confetti({ particleCount: 200, spread: 90 });
-};
+const audio=document.getElementById("music");
+startBtn.onclick=()=>{ audio.play(); startBtn.style.display="none"; confetti({particleCount:200,spread:90}); };
 
 /* FOTOĞRAFLAR */
-const notes = {
-  1:"ilk yavrumuzun bardaktaki tatlı gülüşü💕",
-  7:"Ah senin şu şumarıklıkların",
-  15:"Hep böyle şaşırıcaksın",
-  22:"En sevdiğimiz fotoğraf"
-};
-
-const gallery = document.getElementById("gallery");
-
-for (let i = 1; i <= 25; i++) {
-  const card = document.createElement("div");
-  card.className = "photo-card";
-
-  const img = document.createElement("img");
-  img.src = `foto${i}.jpg`;
-  img.onclick = () => openOverlay(img.src);
-
-  card.appendChild(img);
-
-  if (notes[i]) {
-    const n = document.createElement("div");
-    n.className = "note";
-    n.innerText = notes[i];
-    card.appendChild(n);
-  }
-
-  gallery.appendChild(card);
+const notes={1:"ilk yavrumuzun bardaktaki tatlı gülüşü💕",7:"Ah senin şu şumarıklıkların",15:"Hep böyle şaşırıcaksın",22:"En sevdiğimiz fotoğraf"};
+const g=document.getElementById("gallery");
+for(let i=1;i<=25;i++){
+  const c=document.createElement("div"); c.className="photo-card";
+  const img=document.createElement("img"); img.src=`foto${i}.jpg`; img.onclick=()=>openOverlay(img.src);
+  c.appendChild(img);
+  if(notes[i]){ const n=document.createElement("div"); n.className="note"; n.innerText=notes[i]; c.appendChild(n); }
+  g.appendChild(c);
 }
 
 /* OVERLAY + HAVAİ FİŞEK */
-const overlay = document.getElementById("overlay");
-const overlayImg = document.getElementById("overlayImg");
-const canvas = document.getElementById("fireworks");
-const ctx = canvas.getContext("2d");
-
-function openOverlay(src) {
-  overlay.style.display = "flex";
-  overlayImg.src = src;
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-  for (let i = 0; i < 8; i++) setTimeout(explode, i * 250);
+const o=document.getElementById("overlay"), oi=document.getElementById("overlayImg");
+const canvas=document.getElementById("fireworks"), ctx=canvas.getContext("2d");
+let particles=[];
+function openOverlay(src){
+  o.style.display="flex"; oi.src=src;
+  canvas.width=innerWidth; canvas.height=innerHeight;
+  for(let i=0;i<6;i++)setTimeout(explode,i*300);
 }
-
-function closeOverlay() {
-  overlay.style.display = "none";
+function closeOverlay(){ o.style.display="none"; ctx.clearRect(0,0,canvas.width,canvas.height); particles=[]; }
+function explode(){
+  const x=Math.random()*canvas.width,y=Math.random()*canvas.height/2;
+  for(let i=0;i<80;i++)particles.push({x,y,vx:(Math.random()-.5)*6,vy:(Math.random()-.5)*6,life:60,color:`hsl(${Math.random()*360},100%,50%)`});
+}
+(function anim(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach((p,i)=>{ p.x+=p.vx; p.y+=p.vy; p.life--; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,2,0,Math.PI*2); ctx.fill(); if(p.life<=0)particles.splice(i,1); });
+  requestAnimationFrame(anim);
+})();
+
+/* FİNAL */
+let done=false;
+addEventListener("scroll",()=>{ if(!done && innerHeight+scrollY>=document.body.offsetHeight-50){ done=true; final.style.opacity=1; confetti({particleCount:400,spread:140}); } });
+
+/* 💕 KALP ARKA PLAN */
+const bg=document.getElementById("heartsBg"), bctx=bg.getContext("2d");
+function resize(){ bg.width=innerWidth; bg.height=innerHeight; } resize(); addEventListener("resize",resize);
+const hearts=Array.from({length:30},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,s:Math.random()*10+6,sp:Math.random()*.4+.2,o:Math.random()*.4+.3}));
+function drawH(x,y,s,o){
+  bctx.globalAlpha=o; bctx.fillStyle="#ff6b81"; bctx.beginPath();
+  bctx.moveTo(x,y);
+  bctx.bezierCurveTo(x-s,y-s,x-s*2,y+s/3,x,y+s);
+  bctx.bezierCurveTo(x+s*2,y+s/3,x+s,y-s,x,y);
+  bctx.fill(); bctx.globalAlpha=1;
 }
-
-let particles = [];
-
-function explode() {
-  const x = Math.random() * canvas.width;
-  const y = Math.random() * canvas.height / 2;
-
-  for (let i = 0; i < 80; i++) {
-    particles.push({
-      x,
-      y,
-      vx: (Math.random() - 0.5) * 6,
-      vy: (Math.random() - 0.5) * 6,
-      life: 60,
-      color: `hsl(${Math.random() * 360},100%,50%)`
-    });
-  }
-}
-
-function animateFireworks() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  particles.forEach((p, index) => {
-    p.x += p.vx;
-    p.y += p.vy;
-    p.life--;
-
-    ctx.fillStyle = p.color;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-    ctx.fill();
-
-    if (p.life <= 0) particles.splice(index, 1);
-  });
-
-  requestAnimationFrame(animateFireworks);
-}
-
-animateFireworks();
-
-
-/* FİNAL SAHNESİ */
-let finalPlayed = false;
-window.addEventListener("scroll", () => {
-  if (finalPlayed) return;
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
-    finalPlayed = true;
-    document.getElementById("final").style.opacity = 1;
-    confetti({ particleCount: 400, spread: 140 });
-  }
-});
+(function hb(){
+  bctx.clearRect(0,0,bg.width,bg.height);
+  hearts.forEach(h=>{ drawH(h.x,h.y,h.s,h.o); h.y-=h.sp; if(h.y<-20){h.y=bg.height+20; h.x=Math.random()*bg.width;} });
+  requestAnimationFrame(hb);
+})();
 </script>
 
 </body>
