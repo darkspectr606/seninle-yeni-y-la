@@ -16,6 +16,7 @@ body, html {
   overflow-x: hidden;
 }
 
+/* GECE YARISI SAYAÇ */
 #countdownOverlay {
   position: fixed;
   inset: 0;
@@ -29,13 +30,14 @@ body, html {
   font-size: 48px;
   transition: opacity 2s ease;
 }
-#countdownOverlay.hidden { opacity: 0; pointer-events: none; }
 
+/* ANA İÇERİK */
 .container {
   max-width: 1200px;
   margin: auto;
   padding: 30px 20px;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 2s ease;
 }
 
@@ -115,7 +117,6 @@ canvas { position: absolute; inset: 0; }
 
 h1 { font-size: 42px; }
 .subtitle { font-size: 18px; opacity: 0.9; }
-
 </style>
 </head>
 <body>
@@ -158,17 +159,17 @@ h1 { font-size: 42px; }
 
 <script>
 /* ===============================
-   TEST SAYAÇ (00:20)
+   TEST SAYAÇ (00:30)
 ================================= */
 const countdownEl = document.getElementById("countdown");
 const overlay = document.getElementById("countdownOverlay");
 const mainContent = document.getElementById("mainContent");
 let countdownDone = false;
 
-// TEST: Bugün 00:20
+// HEDEF SAAT 00:30
 const now = new Date();
 let target = new Date();
-target.setHours(0,20,0,0);
+target.setHours(0,30,0,0);
 if(target <= now) target.setDate(target.getDate() + 1);
 
 const countdownInterval = setInterval(() => {
@@ -186,6 +187,11 @@ const countdownInterval = setInterval(() => {
     setTimeout(() => {
       overlay.style.display = "none";
       mainContent.style.opacity = "1";
+      mainContent.style.pointerEvents = "auto";
+      document.body.style.overflow = "auto"; // scroll açıldı
+
+      // typewriter başlat
+      typeWriter();
 
       // konfeti sürprizi
       for(let i=0;i<3;i++){
@@ -320,9 +326,6 @@ function drawHeart(x,y,s,o){
   });
   requestAnimationFrame(animateHearts);
 })();
-
-/* TYPEWRITER SAYAÇ SONRASI BAŞLAT */
-setTimeout(typeWriter,100);
 </script>
 
 </body>
