@@ -53,7 +53,7 @@ html, body {
 
 canvas { position:absolute; inset:0; pointer-events:none; }
 
-#final { margin:120px 0 80px; font-size:36px; opacity:0; transition:opacity 2s ease; }
+#final { margin:120px 0 80px; font-size:36px; opacity:0; transition:opacity 2s ease; text-align:center; }
 .footer { margin:50px 0; font-size:32px; font-weight:600; color:#ffddcf; }
 h1 { font-size:42px; }
 .subtitle { font-size:18px; opacity:0.9; }
@@ -108,8 +108,9 @@ const surpriseBtn = document.getElementById("surpriseBtn");
 const mainContent = document.getElementById("mainContent");
 const startBtn = document.getElementById("startBtn");
 const music = document.getElementById("music");
+const finalText = document.getElementById("final");
 
-// Fade out sonrası tuş animasyonu için
+// Fade out sonrası tuş animasyonu
 setTimeout(()=>{ surpriseBtn.style.opacity=1; surpriseBtn.style.transform="translateY(0)"; },100);
 
 surpriseBtn.addEventListener("click", ()=>{
@@ -127,7 +128,11 @@ surpriseBtn.addEventListener("click", ()=>{
     document.querySelector('.message').classList.add('show');
     typeWriter();
 
-    startBtn.style.display="inline-block"; // Müzik tuşu
+    // Müzik tuşunu animasyonla göster
+    startBtn.style.display="inline-block";
+    startBtn.style.opacity=0; startBtn.style.transform="translateY(30px)";
+    setTimeout(()=>{ startBtn.style.transition="all 1s ease"; startBtn.style.opacity=1; startBtn.style.transform="translateY(0)"; },300);
+
   },2000);
 });
 
@@ -155,7 +160,7 @@ function typeWriter(){
   }
 }
 
-/* Müzik (manuel) */
+/* Müzik */
 startBtn.onclick = ()=>{
   music.play().catch(()=>{ console.log("Müzik çalmadı, kullanıcı etkileşimi gerekebilir."); }); 
   startBtn.style.display="none";
@@ -182,14 +187,15 @@ function openOverlay(src){
   particles=[]; 
   o.style.display="flex"; oi.src=src;
   canvas.width=window.innerWidth; canvas.height=window.innerHeight;
-  for(let i=0;i<4;i++) setTimeout(explode,i*300); 
+  // Küçük fireworks patlamaları arka planda
+  for(let i=0;i<6;i++) setTimeout(explode,i*400); 
 }
 function closeOverlay(){
   o.style.display="none"; ctx.clearRect(0,0,canvas.width,canvas.height); particles=[];
 }
 function explode(){
   const x=Math.random()*canvas.width, y=Math.random()*canvas.height/2;
-  for(let i=0;i<60;i++) particles.push({x,y,vx:(Math.random()-.5)*6,vy:(Math.random()-.5)*6,life:60,color:`hsl(${Math.random()*360},100%,50%)`});
+  for(let i=0;i<50;i++) particles.push({x,y,vx:(Math.random()-.5)*4,vy:(Math.random()-.5)*4,life:50,color:`hsl(${Math.random()*360},100%,50%)`});
 }
 (function anim(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -224,6 +230,14 @@ function drawHeart(x,y,s,o){
   hearts.forEach(h=>{ drawHeart(h.x,h.y,h.s,h.o); h.y-=h.sp; if(h.y<-30){ h.y=bg.height+30; h.x=Math.random()*bg.width; } });
   requestAnimationFrame(animateHearts);
 })();
+
+/* Final yazısını fade-in ile gösterme */
+window.addEventListener('scroll', ()=>{
+  const finalPos = finalText.getBoundingClientRect().top;
+  if(finalPos < window.innerHeight*0.8){
+    finalText.style.opacity = 1;
+  }
+});
 </script>
 </body>
 </html>
