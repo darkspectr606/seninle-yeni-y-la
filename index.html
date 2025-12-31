@@ -25,6 +25,7 @@ html, body {
   margin-top:20px; padding:16px 32px;
   font-size:20px; border-radius:30px; border:none;
   cursor:pointer; background:#ffcc70; color:#222;
+  opacity:0; transform:translateY(30px); transition:all 1s ease;
 }
 
 /* Ana içerik */
@@ -101,12 +102,15 @@ h1 { font-size:42px; }
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
-/* 1️⃣ Sürpriz butonu */
+/* Sürpriz butonu fade out */
 const blackOverlay = document.getElementById("blackOverlay");
 const surpriseBtn = document.getElementById("surpriseBtn");
 const mainContent = document.getElementById("mainContent");
 const startBtn = document.getElementById("startBtn");
 const music = document.getElementById("music");
+
+// Fade out sonrası tuş animasyonu için
+setTimeout(()=>{ surpriseBtn.style.opacity=1; surpriseBtn.style.transform="translateY(0)"; },100);
 
 surpriseBtn.addEventListener("click", ()=>{
   confetti({particleCount:200, spread:90});
@@ -123,14 +127,11 @@ surpriseBtn.addEventListener("click", ()=>{
     document.querySelector('.message').classList.add('show');
     typeWriter();
 
-    startBtn.style.display="inline-block";
-
-    // Mobil ve PC için güvenli müzik başlatma
-    music.play().catch(()=>{ console.log("Müzik başlatılamadı. Kullanıcı etkileşimi gerekebilir."); });
+    startBtn.style.display="inline-block"; // Müzik tuşu
   },2000);
 });
 
-/* 2️⃣ Typewriter */
+/* Typewriter */
 const text=`Seni düşündüğüm her an bu sayfaya saklandı 💫
 
 Belki aynı şehirde değiliz,
@@ -154,14 +155,14 @@ function typeWriter(){
   }
 }
 
-/* 3️⃣ Müzik */
+/* Müzik (manuel) */
 startBtn.onclick = ()=>{
-  music.play().catch(()=>{}); 
+  music.play().catch(()=>{ console.log("Müzik çalmadı, kullanıcı etkileşimi gerekebilir."); }); 
   startBtn.style.display="none";
   confetti({particleCount:200, spread:90});
 };
 
-/* 4️⃣ Fotoğraflar */
+/* Fotoğraflar */
 const notes={1:"ilk yavrumuzun bardaktaki tatlı gülüşü💕",7:"Ah senin şu şumarıklıkların",15:"Hep böyle şaşırıcaksın",22:"En sevdiğimiz fotoğraf"};
 const g=document.getElementById("gallery");
 for(let i=1;i<=25;i++){
@@ -173,15 +174,15 @@ for(let i=1;i<=25;i++){
   g.appendChild(c);
 }
 
-/* 5️⃣ Overlay + fireworks */
+/* Overlay + fireworks */
 const o=document.getElementById("overlay"), oi=document.getElementById("overlayImg");
 const canvas=document.getElementById("fireworks"), ctx=canvas.getContext("2d");
 let particles=[];
 function openOverlay(src){
-  particles=[]; // Önce temizle
+  particles=[]; 
   o.style.display="flex"; oi.src=src;
   canvas.width=window.innerWidth; canvas.height=window.innerHeight;
-  for(let i=0;i<4;i++) setTimeout(explode,i*300); // Daha az partikül, mobil optimize
+  for(let i=0;i<4;i++) setTimeout(explode,i*300); 
 }
 function closeOverlay(){
   o.style.display="none"; ctx.clearRect(0,0,canvas.width,canvas.height); particles=[];
@@ -200,12 +201,12 @@ function explode(){
   requestAnimationFrame(anim);
 })();
 
-/* 6️⃣ Arka plan kalpleri */
+/* Arka plan kalpleri */
 const bg=document.getElementById("heartsBg"), bctx=bg.getContext("2d");
 function resize(){ bg.width=window.innerWidth; bg.height=window.innerHeight; }
 resize(); window.addEventListener("resize",resize);
 const isMobile = window.innerWidth < 768;
-const heartCount = isMobile?30:20; // mobilde optimize
+const heartCount = isMobile?30:20; 
 const hearts = Array.from({length:heartCount},()=>({
   x:Math.random()*bg.width, y:Math.random()*bg.height,
   s:isMobile?Math.random()*14+8:Math.random()*8+4,
